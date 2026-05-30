@@ -65,3 +65,7 @@ Basher added recurrence expansion in store selector path. Test coverage now incl
 - **Filters after expansion** — activeFilter applied after virtual occurrence creation
 - **Lane assignment for expanded occurrences** — each virtual occurrence enters lane algorithm independently
 - **All 89/89 tests pass**; new recurrence test suite added to `src/store/` and `src/lib/calendar/`
+
+### Custom Recurrence Panel Shipped — Note from Yen (2026-05-30)
+
+Yen built custom recurrence configuration panel. Tests now at 92/92 (up from 89). Your todo: add end-condition + by-day edge case tests for custom recurrence modal. Focus areas: end date >= event date validation, weekly requires >=1 selected day, occurrence count >= 1.

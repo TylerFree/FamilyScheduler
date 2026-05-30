@@ -1,5 +1,32 @@
 # Project Decisions
 
+## Yen — Custom Recurrence UI Panel (2026-05-30)
+
+### Decision
+
+The EventModal now reveals a bordered custom recurrence panel only when `repeatPreset === "custom"`.
+
+### UX Contract
+
+- Frequency is a four-segment square control: Daily, Weekly, Monthly, Yearly.
+- Interval is controlled as `Every [N] [unit]`, with the unit label derived from frequency.
+- Weekly frequency shows a Sun–Sat or Mon–Sun rectangular weekday toggle group based on `weekStartsOn`.
+- Weekly defaults to the event start-date weekday.
+- End condition is mutually exclusive: Never, On date, or After N occurrences.
+
+### Rule Shapes
+
+- Weekly custom example: `{ freq: "WEEKLY", interval: 2, byDay: ["MO", "WE", "FR"], count: 10 }`
+- Date-ended custom rules use `until: "YYYY-MM-DDT23:59:59.000Z"`.
+- Monthly/yearly custom rules use simple same-day repeats with optional `interval`, `until`, or `count`.
+
+### Validation
+
+- Interval must be an integer `>= 1`.
+- Weekly requires at least one weekday.
+- End date must be `>=` event date.
+- Occurrence count must be an integer `>= 1`.
+
 ## Yen Inbox → Main (2026-05-28)
 
 ### EventChip Component API Contract

@@ -326,6 +326,7 @@ export default function Home() {
           event={modalState.event}
           defaultDate={modalState.defaultDate}
           defaultStartMinutes={modalState.defaultStartMinutes}
+          weekStartsOn={weekStartsOn}
           onSave={handleSave}
           onClose={closeModal}
           onDelete={handleDelete}

@@ -72,4 +72,30 @@ describe("recurrence expansion", () => {
       "2026-06-05",
     ]);
   });
+
+  it("expands simple monthly rules on the same day of month", () => {
+    const event = buildEvent({
+      id: "monthly-club",
+      title: "Monthly club",
+      date: "2026-06-10",
+      recurrence: { freq: "MONTHLY", interval: 2, count: 3 },
+    });
+
+    const occurrences = expandRecurringEventsForDateRange([event], "2026-06-01", "2026-12-31");
+
+    expect(occurrences.map((occurrence) => occurrence.date)).toEqual(["2026-06-10", "2026-08-10", "2026-10-10"]);
+  });
+
+  it("expands simple yearly rules on the same month and day", () => {
+    const event = buildEvent({
+      id: "yearly-checkup",
+      title: "Yearly checkup",
+      date: "2026-06-10",
+      recurrence: { freq: "YEARLY", until: "2028-06-10T23:59:59.000Z" },
+    });
+
+    const occurrences = expandRecurringEventsForDateRange([event], "2026-01-01", "2029-12-31");
+
+    expect(occurrences.map((occurrence) => occurrence.date)).toEqual(["2026-06-10", "2027-06-10", "2028-06-10"]);
+  });
 });

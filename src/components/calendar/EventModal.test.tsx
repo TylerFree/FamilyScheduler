@@ -196,4 +196,32 @@ describe("EventModal", () => {
       recurrence: { freq: "WEEKLY" },
     });
   });
+
+  it("saves a configured custom weekly recurrence rule", () => {
+    const { onSave } = renderModal();
+
+    fireEvent.change(screen.getByLabelText(/Title/i), { target: { value: "Robotics club" } });
+    fireEvent.change(screen.getByLabelText("Repeats"), { target: { value: "custom" } });
+
+    expect(screen.getByLabelText("Custom recurrence settings")).toBeTruthy();
+
+    fireEvent.change(screen.getByLabelText("Repeat interval"), { target: { value: "2" } });
+    fireEvent.click(screen.getByRole("button", { name: "Mon" }));
+    fireEvent.click(screen.getByRole("button", { name: "Fri" }));
+    fireEvent.click(screen.getByRole("radio", { name: /After/i }));
+    fireEvent.change(screen.getByLabelText("Repeat occurrence count"), { target: { value: "10" } });
+    fireEvent.click(screen.getByRole("button", { name: "Save Event" }));
+
+    expect(onSave).toHaveBeenCalledTimes(1);
+    expect(onSave).toHaveBeenCalledWith(
+      expect.objectContaining({
+        recurrence: {
+          freq: "WEEKLY",
+          interval: 2,
+          byDay: ["MO", "WE", "FR"],
+          count: 10,
+        },
+      }),
+    );
+  });
 });

@@ -47,7 +47,12 @@
 .button,
 .previewLabel,
 .previewChip,
-.toggleLabel {
+.toggleLabel,
+.segmentOption,
+.intervalPhrase,
+.weekdayToggle,
+.endConditionGroup,
+.endConditionOption {
   font-family: var(--font-jetbrains-mono);
   font-weight: 500;
   letter-spacing: 0.15em;
@@ -75,6 +80,8 @@
 .attendeeTile,
 .ownerButton,
 .toggle,
+.segmentOption,
+.weekdayToggle,
 .input,
 .titleInput,
 .textarea {
@@ -415,6 +422,124 @@
   padding-right: 32px;
 }
 
+.customRepeatPanel {
+  display: grid;
+  gap: 14px;
+  padding: 14px;
+  border: 1px solid var(--ink);
+  border-left: 4px solid var(--accent);
+  background: var(--paper-deep);
+}
+
+.customSection {
+  display: grid;
+  gap: 8px;
+}
+
+.segmentedControl,
+.weekdayToggleGroup {
+  display: grid;
+  gap: 6px;
+}
+
+.segmentedControl {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.segmentOption {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  padding: 8px 6px;
+  border: 1px solid var(--ink);
+  background: var(--paper);
+  color: var(--ink-soft);
+  font-size: 9px;
+  cursor: pointer;
+}
+
+.segmentOption input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.segmentSelected {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.intervalField {
+  max-width: 100%;
+}
+
+.intervalPhrase {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  color: var(--ink-soft);
+}
+
+.smallNumberInput,
+.endCountInput {
+  width: 74px;
+}
+
+.weekdayToggleGroup {
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+
+.weekdayToggle {
+  padding: 8px 4px;
+  border: 1px solid var(--ink);
+  background: var(--paper);
+  color: var(--ink-soft);
+  font-size: 9px;
+}
+
+.weekdayToggleSelected {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.endConditionGroup {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  color: var(--ink-soft);
+}
+
+.endConditionOption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: 9px;
+}
+
+.endConditionOption input[type="radio"] {
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  accent-color: var(--ink);
+}
+
+.endConditionInput {
+  width: 156px;
+}
+
+.endConditionInput:disabled,
+.endCountInput:disabled {
+  color: var(--ink-faint);
+  opacity: 0.6;
+}
+
 .textarea {
   min-height: 88px;
   padding: 10px 12px;
@@ -478,6 +603,8 @@
 .attendeeButton:focus-visible,
 .driveButton:focus-visible,
 .ownerButton:focus-visible,
+.segmentOption:focus-within,
+.weekdayToggle:focus-visible,
 .bulkActions button:focus-visible,
 .titleInput:focus-visible,
 .input:focus-visible,
@@ -518,7 +645,9 @@
   }
 
   .inputGrid,
-  .attendeeGrid {
+  .attendeeGrid,
+  .segmentedControl,
+  .weekdayToggleGroup {
     grid-template-columns: 1fr;
   }
 

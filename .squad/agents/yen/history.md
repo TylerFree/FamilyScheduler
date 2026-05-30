@@ -17,6 +17,22 @@
 
 ## Learnings
 
+### Custom Recurrence Panel Delivered (2026-05-30)
+
+Built the custom recurrence configuration panel in `src/components/calendar/EventModal.tsx` with local `FormState` fields: `customFrequency`, `customInterval`, `customByDay`, `customEndCondition`, `customEndDate`, and `customOccurrenceCount`.
+
+Validation rules:
+- Custom interval must be a positive integer (`>= 1`).
+- Weekly custom rules must keep at least one weekday selected.
+- End date must be on or after the event start date.
+- Occurrence count must be a positive integer (`>= 1`).
+
+RRULE shape notes:
+- Custom weekly rules emit plain JSON `{ freq: "WEEKLY", interval, byDay, count/until }` for clean Zustand/localStorage persistence.
+- `until` follows the existing app convention: `YYYY-MM-DDT23:59:59.000Z`.
+- `byDay` can include ordinal RFC values in the type, so modal prefill normalizes by slicing the final two weekday characters.
+- Monthly/yearly custom rules emit `freq: "MONTHLY"` / `"YEARLY"` plus interval/end condition only; recurrence expansion now recognizes simple same-day monthly/yearly repeats.
+
 ### Mobile Week View Delivered (2026-06-05)
 
 Built a responsive 3-day sliding window for `src/components/calendar/WeekView.tsx` + `WeekView.module.css`, with a small mobile gutter polish in `src/components/calendar/DayView.module.css`.
@@ -165,3 +181,12 @@ Basher completed recurrence expansion in store selector path. The `useEventsForD
 - **Use in WeekView:** Query by date range using `getEventsForWeek(startDate)` instead of filtering `event.date`; recurrence expansion is built in
 - **Note:** All 89/89 tests pass; build clean
 
+### Custom Recurrence Panel Shipped — Yen (2026-05-30)
+
+Yen completed custom recurrence configuration panel in EventModal. Users can now specify frequency (Daily/Weekly/Monthly/Yearly), interval, weekly weekday selection, and end conditions (Never/On date/After N occurrences). All validation rules in place: interval >= 1, weekly requires >=1 day, end date >= event date, count >= 1.
+
+- **Panel location:** `src/components/calendar/EventModal.tsx`
+- **Form state fields:** customFrequency, customInterval, customByDay, customEndCondition, customEndDate, customOccurrenceCount
+- **RecurrenceRule outputs:** Clean JSON shapes for localStorage/Zustand (weekly: byDay array with RFC codes; monthly/yearly: simple same-day repeats)
+- **Status:** 92/92 tests passing (up from 89), lint clean, build succeeds
+- **Next:** Linus to add end-condition + by-day edge tests; Basher to verify RecurrenceRule shape expansion

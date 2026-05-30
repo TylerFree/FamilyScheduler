@@ -48,3 +48,7 @@ Rusty has completed the Next.js scaffold. Key facts for your store and type work
 - `src/lib/calendar/recurrence.ts` now expands recurring events into virtual occurrences for a requested date range; each occurrence keeps the parent event `id` for edit/delete routing and replaces only `date` with the occurrence date.
 - `src/store/eventsStore.ts` exposes `getEventsForDateRange(startDate, endDate)` and routes `getEventsForDate` / `getEventsForWeek` through expansion. `src/store/index.ts` applies the same expansion before member filtering and lane assignment in `useEventsForDate`, so both DayView and WeekView receive occurrences.
 - Gotcha: recurrence rules are persisted as plain JSON, not live rrule objects. Build occurrence datetimes from local ISO dates + `startMinutes` to avoid UTC date drift; only convert `until` with `Date` when comparing end boundaries.
+
+### Custom Recurrence Panel Shipped — Note from Yen (2026-05-30)
+
+Yen built custom recurrence configuration panel (EventModal). Tests now at 92/92. Your todo: confirm RecurrenceRule shape from custom panel expands correctly. Verify weekly byDay codes, end conditions (until/count), and simple monthly/yearly same-day repeats all produce correct virtual occurrences in expansion path.

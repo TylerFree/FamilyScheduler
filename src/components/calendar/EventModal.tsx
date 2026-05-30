@@ -1,15 +1,34 @@
 "use client";
 
 import React, { useEffect, useId, useMemo, useRef, useState } from "react";
-import { FAMILY_MEMBERS, type Event, type MemberId, type RecurrenceRule } from "@/types/index";
+import {
+  FAMILY_MEMBERS,
+  type Event,
+  type MemberId,
+  type RecurrenceRule,
+  type RecurrenceWeekday,
+  type WeekStartsOn,
+} from "@/types/index";
 import styles from "./EventModal.module.css";
 
 const PARENT_IDS = new Set<MemberId>(["tyler", "heather"]);
 const WHOLE_FAMILY = FAMILY_MEMBERS.map((member) => member.id);
 const ADULTS = FAMILY_MEMBERS.filter((member) => member.role === "parent").map((member) => member.id);
 const KIDS = FAMILY_MEMBERS.filter((member) => member.role === "child").map((member) => member.id);
+const CUSTOM_FREQUENCIES = ["DAILY", "WEEKLY", "MONTHLY", "YEARLY"] as const;
+const WEEKDAY_OPTIONS = [
+  { value: "SU", label: "Sun" },
+  { value: "MO", label: "Mon" },
+  { value: "TU", label: "Tue" },
+  { value: "WE", label: "Wed" },
+  { value: "TH", label: "Thu" },
+  { value: "FR", label: "Fri" },
+  { value: "SA", label: "Sat" },
+] as const satisfies ReadonlyArray<{ value: RecurrenceWeekday; label: string }>;
 
 type RepeatPreset = "none" | "weekly-until" | "weekly-forever" | "weekdays" | "custom";
+type CustomFrequency = (typeof CUSTOM_FREQUENCIES)[number];
+type CustomEndCondition = "never" | "on" | "after";
 
 type FormState = {
   title: string;
@@ -23,11 +42,18 @@ type FormState = {
   attendeeIds: MemberId[];
   drivers: MemberId[];
   repeatPreset: RepeatPreset;
+  customFrequency: CustomFrequency;
+  customInterval: string;
+  customByDay: RecurrenceWeekday[];
+  customEndCondition: CustomEndCondition;
+  customEndDate: string;
+  customOccurrenceCount: string;
 };
 
 type FormErrors = {
   title?: string;
   time?: string;
+  recurrence?: string;
 };
 
 export interface EventModalProps {
@@ -37,6 +63,7 @@ export interface EventModalProps {
   onSave: (event: Omit<Event, "id" | "createdAt" | "createdBy" | "updatedAt"> & Partial<Pick<Event, "id">>) => void;
   onClose: () => void;
   onDelete?: (eventId: string) => void;
+  weekStartsOn?: WeekStartsOn;
 }
 
 function getLocalIsoDate(date = new Date()): string {
@@ -80,6 +107,20 @@ function addDays(date: string, days: number): string {
   return getLocalIsoDate(nextDate);
 }
 
+function getWeekdayForDate(date: string): RecurrenceWeekday {
+  const [year, month, day] = date.split("-").map(Number);
+  const weekdayIndex = new Date(year, month - 1, day).getDay();
+
+  return WEEKDAY_OPTIONS[weekdayIndex].value;
+}
+
+function normalizeByDay(byDay?: RecurrenceRule["byDay"]): RecurrenceWeekday[] {
+  const days = Array.isArray(byDay) ? byDay : byDay ? [byDay] : [];
+  const normalizedDays = days.map((day) => day.slice(-2) as RecurrenceWeekday);
+
+  return WEEKDAY_OPTIONS.map((option) => option.value).filter((weekday) => normalizedDays.includes(weekday));
+}
+
 function orderMemberIds(memberIds: MemberId[], ownerId: MemberId): MemberId[] {
   const memberSet = new Set<MemberId>([ownerId, ...memberIds]);
 
@@ -94,30 +135,75 @@ function getRepeatPreset(recurrence?: RecurrenceRule): RepeatPreset {
     return "none";
   }
 
-  if (recurrence.freq === "WEEKLY" && recurrence.until) {
+  const byDay = Array.isArray(recurrence.byDay) ? recurrence.byDay : recurrence.byDay ? [recurrence.byDay] : [];
+  const hasCustomInterval = recurrence.interval !== undefined && recurrence.interval !== 1;
+  const hasAdvancedRule =
+    recurrence.count !== undefined ||
+    recurrence.dtstart !== undefined ||
+    recurrence.wkst !== undefined ||
+    recurrence.tzid !== undefined ||
+    recurrence.bysetpos !== undefined ||
+    recurrence.bymonth !== undefined ||
+    recurrence.bymonthday !== undefined ||
+    recurrence.byyearday !== undefined ||
+    recurrence.byweekno !== undefined ||
+    recurrence.byhour !== undefined ||
+    recurrence.byminute !== undefined ||
+    recurrence.bysecond !== undefined;
+
+  if (recurrence.freq === "DAILY" && !hasCustomInterval && !recurrence.until && !hasAdvancedRule && byDay.join(",") === "MO,TU,WE,TH,FR") {
+    return "weekdays";
+  }
+
+  if (recurrence.freq === "WEEKLY" && recurrence.until && !hasCustomInterval && byDay.length === 0 && !hasAdvancedRule) {
     return "weekly-until";
   }
 
-  if (recurrence.freq === "WEEKLY") {
+  if (recurrence.freq === "WEEKLY" && !recurrence.until && !hasCustomInterval && byDay.length === 0 && !hasAdvancedRule) {
     return "weekly-forever";
-  }
-
-  const byDay = Array.isArray(recurrence.byDay) ? recurrence.byDay : recurrence.byDay ? [recurrence.byDay] : [];
-  if (recurrence.freq === "DAILY" && byDay.join(",") === "MO,TU,WE,TH,FR") {
-    return "weekdays";
   }
 
   return "custom";
 }
 
-function buildRecurrence(preset: RepeatPreset, date: string, existing?: RecurrenceRule): RecurrenceRule | undefined {
-  switch (preset) {
+function getCustomFrequency(recurrence?: RecurrenceRule): CustomFrequency {
+  return recurrence && CUSTOM_FREQUENCIES.includes(recurrence.freq as CustomFrequency) ? (recurrence.freq as CustomFrequency) : "WEEKLY";
+}
+
+function getCustomEndCondition(recurrence?: RecurrenceRule): CustomEndCondition {
+  if (recurrence?.count) {
+    return "after";
+  }
+
+  if (recurrence?.until) {
+    return "on";
+  }
+
+  return "never";
+}
+
+function buildCustomState(recurrence: RecurrenceRule | undefined, date: string) {
+  const customFrequency = getCustomFrequency(recurrence);
+  const customByDay = customFrequency === "WEEKLY" ? normalizeByDay(recurrence?.byDay) : [];
+
+  return {
+    customFrequency,
+    customInterval: `${Math.max(1, recurrence?.interval ?? 1)}`,
+    customByDay: customByDay.length > 0 ? customByDay : [getWeekdayForDate(date)],
+    customEndCondition: getCustomEndCondition(recurrence),
+    customEndDate: recurrence?.until ? recurrence.until.slice(0, 10) : date,
+    customOccurrenceCount: `${Math.max(1, recurrence?.count ?? 10)}`,
+  };
+}
+
+function buildRecurrence(formState: FormState, existing?: RecurrenceRule): RecurrenceRule | undefined {
+  switch (formState.repeatPreset) {
     case "none":
       return undefined;
     case "weekly-until":
       return {
         freq: "WEEKLY",
-        until: existing?.until ?? `${addDays(date, 14)}T23:59:59.000Z`,
+        until: existing?.until ?? `${addDays(formState.date, 14)}T23:59:59.000Z`,
       };
     case "weekly-forever":
       return {
@@ -128,8 +214,30 @@ function buildRecurrence(preset: RepeatPreset, date: string, existing?: Recurren
         freq: "DAILY",
         byDay: ["MO", "TU", "WE", "TH", "FR"],
       };
-    case "custom":
-      return existing ?? { freq: "WEEKLY" };
+    case "custom": {
+      const interval = Math.max(1, Number.parseInt(formState.customInterval, 10));
+      const recurrence: RecurrenceRule = {
+        freq: formState.customFrequency,
+      };
+
+      if (interval > 1) {
+        recurrence.interval = interval;
+      }
+
+      if (formState.customFrequency === "WEEKLY") {
+        recurrence.byDay = formState.customByDay;
+      }
+
+      if (formState.customEndCondition === "on") {
+        recurrence.until = `${formState.customEndDate}T23:59:59.000Z`;
+      }
+
+      if (formState.customEndCondition === "after") {
+        recurrence.count = Math.max(1, Number.parseInt(formState.customOccurrenceCount, 10));
+      }
+
+      return recurrence;
+    }
     default:
       return undefined;
   }
@@ -140,10 +248,12 @@ function buildInitialState(event?: Event | null, defaultDate?: string, defaultSt
   const attendeeIds = orderMemberIds(event?.attendeeIds ?? [ownerId], ownerId);
   const defaultStart = roundToQuarterHour(defaultStartMinutes ?? 9 * 60);
   const defaultEnd = clampMinutes(defaultStart + 60);
+  const date = event?.date ?? defaultDate ?? getLocalIsoDate();
+  const customState = buildCustomState(event?.recurrence, date);
 
   return {
     title: event?.title ?? "",
-    date: event?.date ?? defaultDate ?? getLocalIsoDate(),
+    date,
     startTime: minutesToTimeString(event?.isAllDay ? 0 : event?.startMinutes ?? defaultStart),
     endTime: minutesToTimeString(event?.isAllDay ? 23 * 60 + 59 : event?.endMinutes ?? defaultEnd),
     isAllDay: event?.isAllDay ?? false,
@@ -153,10 +263,17 @@ function buildInitialState(event?: Event | null, defaultDate?: string, defaultSt
     attendeeIds,
     drivers: (event?.drivers ?? []).filter((memberId) => attendeeIds.includes(memberId) && PARENT_IDS.has(memberId)),
     repeatPreset: getRepeatPreset(event?.recurrence),
+    ...customState,
   };
 }
 
-export default function EventModal({ event, defaultDate, defaultStartMinutes, onSave, onClose, onDelete }: EventModalProps) {
+function isPositiveInteger(value: string): boolean {
+  const parsedValue = Number(value);
+
+  return Number.isInteger(parsedValue) && parsedValue >= 1;
+}
+
+export default function EventModal({ event, defaultDate, defaultStartMinutes, onSave, onClose, onDelete, weekStartsOn = 0 }: EventModalProps) {
   const dialogRef = useRef<HTMLDivElement>(null);
   const titleInputRef = useRef<HTMLInputElement>(null);
   const timedValuesRef = useRef<{ startTime: string; endTime: string } | null>(null);
@@ -232,6 +349,10 @@ export default function EventModal({ event, defaultDate, defaultStartMinutes, on
     () => FAMILY_MEMBERS.filter((member) => formState.attendeeIds.includes(member.id)),
     [formState.attendeeIds],
   );
+  const orderedWeekdays = useMemo(
+    () => (weekStartsOn === 1 ? [...WEEKDAY_OPTIONS.slice(1), WEEKDAY_OPTIONS[0]] : [...WEEKDAY_OPTIONS]),
+    [weekStartsOn],
+  );
 
   const handleFieldChange = <K extends keyof FormState>(field: K, value: FormState[K]) => {
     setFormState((currentState) => ({
@@ -262,6 +383,38 @@ export default function EventModal({ event, defaultDate, defaultStartMinutes, on
         isAllDay: false,
         startTime: previousTimedValues?.startTime ?? minutesToTimeString(roundToQuarterHour(defaultStartMinutes ?? 9 * 60)),
         endTime: previousTimedValues?.endTime ?? minutesToTimeString(clampMinutes(roundToQuarterHour(defaultStartMinutes ?? 9 * 60) + 60)),
+      };
+    });
+  };
+
+  const handleRepeatPresetChange = (repeatPreset: RepeatPreset) => {
+    setFormState((currentState) => ({
+      ...currentState,
+      repeatPreset,
+      customByDay:
+        repeatPreset === "custom" && currentState.customFrequency === "WEEKLY" && currentState.customByDay.length === 0
+          ? [getWeekdayForDate(currentState.date)]
+          : currentState.customByDay,
+    }));
+  };
+
+  const handleCustomFrequencyChange = (customFrequency: CustomFrequency) => {
+    setFormState((currentState) => ({
+      ...currentState,
+      customFrequency,
+      customByDay: customFrequency === "WEEKLY" && currentState.customByDay.length === 0 ? [getWeekdayForDate(currentState.date)] : currentState.customByDay,
+    }));
+  };
+
+  const handleToggleCustomWeekday = (weekday: RecurrenceWeekday) => {
+    setFormState((currentState) => {
+      const isSelected = currentState.customByDay.includes(weekday);
+
+      return {
+        ...currentState,
+        customByDay: isSelected
+          ? currentState.customByDay.filter((selectedWeekday) => selectedWeekday !== weekday)
+          : WEEKDAY_OPTIONS.map((option) => option.value).filter((optionWeekday) => [...currentState.customByDay, weekday].includes(optionWeekday)),
       };
     });
   };
@@ -338,6 +491,18 @@ export default function EventModal({ event, defaultDate, defaultStartMinutes, on
       nextErrors.time = "End time must be later than start time.";
     }
 
+    if (formState.repeatPreset === "custom") {
+      if (!isPositiveInteger(formState.customInterval)) {
+        nextErrors.recurrence = "Custom repeat interval must be at least 1.";
+      } else if (formState.customFrequency === "WEEKLY" && formState.customByDay.length === 0) {
+        nextErrors.recurrence = "Choose at least one weekday for a weekly custom repeat.";
+      } else if (formState.customEndCondition === "on" && formState.customEndDate < formState.date) {
+        nextErrors.recurrence = "Repeat end date must be on or after the event date.";
+      } else if (formState.customEndCondition === "after" && !isPositiveInteger(formState.customOccurrenceCount)) {
+        nextErrors.recurrence = "Occurrence count must be at least 1.";
+      }
+    }
+
     setErrors(nextErrors);
 
     if (Object.keys(nextErrors).length > 0) {
@@ -356,7 +521,7 @@ export default function EventModal({ event, defaultDate, defaultStartMinutes, on
       ownerId: formState.ownerId,
       attendeeIds: orderMemberIds(formState.attendeeIds, formState.ownerId),
       drivers: formState.drivers.filter((memberId) => formState.attendeeIds.includes(memberId) && PARENT_IDS.has(memberId)),
-      recurrence: buildRecurrence(formState.repeatPreset, formState.date, event?.recurrence),
+      recurrence: buildRecurrence(formState, event?.recurrence),
     });
   };
 
@@ -582,7 +747,7 @@ export default function EventModal({ event, defaultDate, defaultStartMinutes, on
                 id={`${titleId}-repeat`}
                 className={[styles.input, styles.monoInput, styles.selectInput].join(" ")}
                 value={formState.repeatPreset}
-                onChange={(changeEvent) => handleFieldChange("repeatPreset", changeEvent.target.value as RepeatPreset)}
+                onChange={(changeEvent) => handleRepeatPresetChange(changeEvent.target.value as RepeatPreset)}
               >
                 <option value="none">Does Not Repeat</option>
                 <option value="weekly-until">Weekly — Until Two Weeks Out</option>
@@ -590,6 +755,135 @@ export default function EventModal({ event, defaultDate, defaultStartMinutes, on
                 <option value="weekdays">Every Weekday</option>
                 <option value="custom">Custom</option>
               </select>
+              {formState.repeatPreset === "custom" ? (
+                <div className={styles.customRepeatPanel} aria-label="Custom recurrence settings">
+                  <div className={styles.customSection}>
+                    <p className={styles.subLabel}>Frequency</p>
+                    <div className={styles.segmentedControl}>
+                      {CUSTOM_FREQUENCIES.map((frequency) => (
+                        <label key={frequency} className={[styles.segmentOption, formState.customFrequency === frequency ? styles.segmentSelected : ""].filter(Boolean).join(" ")}>
+                          <input
+                            type="radio"
+                            name={`${titleId}-custom-frequency`}
+                            value={frequency}
+                            checked={formState.customFrequency === frequency}
+                            onChange={() => handleCustomFrequencyChange(frequency)}
+                          />
+                          {frequency.toLowerCase()}
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+
+                  <label className={[styles.subField, styles.intervalField].join(" ")}>
+                    <span className={styles.subLabel}>Interval</span>
+                    <span className={styles.intervalPhrase}>
+                      <span>Every</span>
+                      <input
+                        type="number"
+                        min="1"
+                        step="1"
+                        className={[styles.input, styles.monoInput, styles.smallNumberInput].join(" ")}
+                        value={formState.customInterval}
+                        onChange={(changeEvent) => handleFieldChange("customInterval", changeEvent.target.value)}
+                        aria-label="Repeat interval"
+                      />
+                      <span>
+                        {formState.customFrequency === "DAILY"
+                          ? formState.customInterval === "1"
+                            ? "day"
+                            : "days"
+                          : formState.customFrequency === "WEEKLY"
+                            ? formState.customInterval === "1"
+                              ? "week"
+                              : "weeks"
+                            : formState.customFrequency === "MONTHLY"
+                              ? formState.customInterval === "1"
+                                ? "month"
+                                : "months"
+                              : formState.customInterval === "1"
+                                ? "year"
+                                : "years"}
+                      </span>
+                    </span>
+                  </label>
+
+                  {formState.customFrequency === "WEEKLY" ? (
+                    <div className={styles.customSection}>
+                      <p className={styles.subLabel}>By weekday</p>
+                      <div className={styles.weekdayToggleGroup}>
+                        {orderedWeekdays.map((weekday) => {
+                          const isSelected = formState.customByDay.includes(weekday.value);
+
+                          return (
+                            <button
+                              key={weekday.value}
+                              type="button"
+                              className={[styles.weekdayToggle, isSelected ? styles.weekdayToggleSelected : ""].filter(Boolean).join(" ")}
+                              onClick={() => handleToggleCustomWeekday(weekday.value)}
+                              aria-pressed={isSelected}
+                            >
+                              {weekday.label}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ) : null}
+
+                  <fieldset className={styles.endConditionGroup}>
+                    <legend className={styles.subLabel}>End condition</legend>
+                    <label className={styles.endConditionOption}>
+                      <input
+                        type="radio"
+                        name={`${titleId}-custom-end`}
+                        checked={formState.customEndCondition === "never"}
+                        onChange={() => handleFieldChange("customEndCondition", "never")}
+                      />
+                      <span>Never</span>
+                    </label>
+                    <label className={styles.endConditionOption}>
+                      <input
+                        type="radio"
+                        name={`${titleId}-custom-end`}
+                        checked={formState.customEndCondition === "on"}
+                        onChange={() => handleFieldChange("customEndCondition", "on")}
+                      />
+                      <span>On date</span>
+                      <input
+                        type="date"
+                        min={formState.date}
+                        className={[styles.input, styles.monoInput, styles.endConditionInput].join(" ")}
+                        value={formState.customEndDate}
+                        onChange={(changeEvent) => handleFieldChange("customEndDate", changeEvent.target.value)}
+                        disabled={formState.customEndCondition !== "on"}
+                        aria-label="Repeat end date"
+                      />
+                    </label>
+                    <label className={styles.endConditionOption}>
+                      <input
+                        type="radio"
+                        name={`${titleId}-custom-end`}
+                        checked={formState.customEndCondition === "after"}
+                        onChange={() => handleFieldChange("customEndCondition", "after")}
+                      />
+                      <span>After</span>
+                      <input
+                        type="number"
+                        min="1"
+                        step="1"
+                        className={[styles.input, styles.monoInput, styles.endCountInput].join(" ")}
+                        value={formState.customOccurrenceCount}
+                        onChange={(changeEvent) => handleFieldChange("customOccurrenceCount", changeEvent.target.value)}
+                        disabled={formState.customEndCondition !== "after"}
+                        aria-label="Repeat occurrence count"
+                      />
+                      <span>occurrences</span>
+                    </label>
+                  </fieldset>
+                  {errors.recurrence ? <p className={styles.errorText}>{errors.recurrence}</p> : null}
+                </div>
+              ) : null}
             </div>
 
             <div className={styles.field}>

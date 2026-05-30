@@ -111,12 +111,39 @@ function isMatchingWeeklyOccurrence(event: Event, occurrenceDate: Date): boolean
   return allowedWeekdays.has(occurrenceDate.getDay());
 }
 
+function isMatchingMonthlyOccurrence(event: Event, occurrenceDate: Date): boolean {
+  const recurrence = event.recurrence;
+  const interval = recurrence?.interval ?? 1;
+  const startDate = parseIsoDate(event.date);
+  const monthsSinceStart = (occurrenceDate.getFullYear() - startDate.getFullYear()) * 12 + occurrenceDate.getMonth() - startDate.getMonth();
+
+  return monthsSinceStart >= 0 && monthsSinceStart % interval === 0 && occurrenceDate.getDate() === startDate.getDate();
+}
+
+function isMatchingYearlyOccurrence(event: Event, occurrenceDate: Date): boolean {
+  const recurrence = event.recurrence;
+  const interval = recurrence?.interval ?? 1;
+  const startDate = parseIsoDate(event.date);
+  const yearsSinceStart = occurrenceDate.getFullYear() - startDate.getFullYear();
+
+  return (
+    yearsSinceStart >= 0 &&
+    yearsSinceStart % interval === 0 &&
+    occurrenceDate.getMonth() === startDate.getMonth() &&
+    occurrenceDate.getDate() === startDate.getDate()
+  );
+}
+
 function isMatchingOccurrence(event: Event, occurrenceDate: Date): boolean {
   switch (event.recurrence?.freq) {
     case "DAILY":
       return isMatchingDailyOccurrence(event, occurrenceDate);
     case "WEEKLY":
       return isMatchingWeeklyOccurrence(event, occurrenceDate);
+    case "MONTHLY":
+      return isMatchingMonthlyOccurrence(event, occurrenceDate);
+    case "YEARLY":
+      return isMatchingYearlyOccurrence(event, occurrenceDate);
     default:
       return getLocalIsoDate(occurrenceDate) === event.date;
   }
