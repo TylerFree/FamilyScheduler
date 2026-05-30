@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Free Family — Today</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,500;1,9..144,600&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #f4ede1;
+    --paper-deep: #ebe2d2;
+    --ink: #1a1814;
+    --ink-soft: #4a4438;
+    --ink-faint: #8a8170;
+    --rule: #d4c9b3;
+    --rule-soft: #e4dac6;
+    --accent: #c2410c;
+
+    --tyler:   #c2410c;
+    --heather: #7c2d6f;
+    --kai:     #1e5f74;
+    --maya:    #b4632f;
+    --jude:    #4a6b3a;
+    --rowan:   #8a4c8a;
+    --finn:    #a8651c;
+
+    /* TIME SCALE: 1 minute = 1 pixel. 1 hour = 60px. */
+    --hour-height: 60px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Inter Tight', -apple-system, sans-serif;
+    min-height: 100vh;
+    padding: 20px 28px;
+  }
+
+  .frame { max-width: 1600px; margin: 0 auto; }
+
+  /* HEADER */
+  .header-bar {
+    border-top: 2px solid var(--ink);
+    border-bottom: 1px solid var(--ink);
+    padding: 12px 0;
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .brand {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 22px;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    white-space: nowrap;
+  }
+  .brand .amp { color: var(--accent); font-weight: 400; }
+  .brand .sub {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-style: normal;
+    font-size: 8px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    font-weight: 500;
+    margin-top: 2px;
+  }
+
+  .date-block {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    justify-content: center;
+  }
+  .date-block .dow {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 28px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+  .date-block .meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  .controls { display: flex; gap: 8px; align-items: center; }
+  .view-switch { display: inline-flex; border: 1px solid var(--ink); }
+  .view-switch button {
+    background: transparent; border: none;
+    padding: 6px 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;
+    cursor: pointer; color: var(--ink);
+  }
+  .view-switch button.active { background: var(--ink); color: var(--paper); }
+
+  .nav-btn {
+    width: 28px; height: 28px;
+    border: 1px solid var(--ink); background: transparent; cursor: pointer;
+    font-family: 'Fraunces', serif; font-size: 14px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+  }
+  .nav-btn:hover { background: var(--ink); color: var(--paper); }
+  .today-btn {
+    height: 28px; padding: 0 12px;
+    border: 1px solid var(--ink); background: transparent; cursor: pointer;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase;
+  }
+  .today-btn:hover { background: var(--ink); color: var(--paper); }
+
+  .add-event {
+    background: var(--ink); color: var(--paper); border: none;
+    padding: 7px 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;
+    cursor: pointer;
+  }
+  .add-event:hover { background: var(--accent); }
+
+  /* MEMBER BAR */
+  .member-bar {
+    display: flex;
+    gap: 0;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--ink);
+    align-items: center;
+    overflow-x: auto;
+  }
+  .member-bar-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--ink-faint);
+    padding-right: 16px;
+    border-right: 1px solid var(--rule);
+    margin-right: 16px;
+    white-space: nowrap;
+  }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px 6px 8px;
+    border: 1px solid var(--ink);
+    background: var(--paper-deep);
+    cursor: pointer;
+    margin-right: 6px;
+    transition: all 0.15s;
+    white-space: nowrap;
+    position: relative;
+  }
+  .chip::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--c); opacity: 0.08;
+    pointer-events: none;
+  }
+  .chip.muted { opacity: 0.35; background: transparent; }
+  .chip.muted::before { opacity: 0; }
+  .chip-color { width: 4px; height: 18px; background: var(--c); flex-shrink: 0; }
+  .chip-name {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 15px; font-weight: 500; line-height: 1;
+  }
+  .chip-count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px; color: var(--ink-soft);
+    letter-spacing: 0.05em;
+    background: var(--paper);
+    padding: 2px 5px; border: 1px solid var(--rule);
+    font-weight: 500;
+  }
+  .member-bar-actions {
+    margin-left: auto;
+    display: flex; gap: 12px;
+    padding-left: 16px;
+    border-left: 1px solid var(--rule);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .member-bar-actions button {
+    background: transparent; border: none; padding: 0; cursor: pointer;
+    color: var(--ink-soft);
+    text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px;
+    font-family: inherit; font-size: inherit; letter-spacing: inherit; text-transform: inherit;
+  }
+  .member-bar-actions button:hover { color: var(--accent); }
+
+  /* TIMELINE */
+  .timeline {
+    padding-top: 4px;
+    position: relative;
+    display: grid;
+    grid-template-columns: 56px 1fr;
+  }
+
+  .hours-column {
+    position: relative;
+    border-right: 1px solid var(--rule);
+  }
+
+  .hour-label {
+    height: var(--hour-height);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 0.1em;
+    color: var(--ink-faint);
+    padding-top: 6px;
+    text-align: right;
+    padding-right: 12px;
+    position: relative;
+  }
+  .hour-label .ampm { font-size: 8px; margin-left: 2px; }
+
+  .events-column {
+    position: relative;
+  }
+
+  .ruler {
+    position: absolute;
+    left: 0; right: 0;
+    height: 1px;
+    background: var(--rule-soft);
+  }
+  .ruler.major { background: var(--rule); }
+
+  /* NOW LINE */
+  .now-line {
+    position: absolute;
+    left: 0; right: 0;
+    height: 1px;
+    background: var(--accent);
+    z-index: 5;
+    pointer-events: none;
+  }
+  .now-line::before {
+    content: '';
+    position: absolute; left: -6px; top: -4px;
+    width: 9px; height: 9px;
+    background: var(--accent); border-radius: 50%;
+  }
+  .now-line::after {
+    content: 'NOW · 2:47';
+    position: absolute; right: 4px; top: -16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px; letter-spacing: 0.15em;
+    color: var(--accent); background: var(--paper);
+    padding: 0 4px; font-weight: 600;
+  }
+
+  /* EVENTS */
+  .event {
+    position: absolute;
+    top: calc(var(--start) * 1px);
+    height: calc(var(--dur) * 1px);
+    padding: 8px 14px 8px 16px;
+    background: var(--paper-deep);
+    border-left: 3px solid var(--c);
+    cursor: pointer;
+    transition: all 0.18s ease;
+    overflow: hidden;
+  }
+  .event.solo {
+    left: 12px;
+    right: 12px;
+  }
+  .event.in-lane {
+    left: calc(12px + (var(--lane) * ((100% - 24px - (var(--lanes) - 1) * 6px) / var(--lanes) + 6px)));
+    width: calc((100% - 24px - (var(--lanes) - 1) * 6px) / var(--lanes));
+  }
+
+  .event::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--c); opacity: 0.06;
+    pointer-events: none;
+  }
+  .event:hover {
+    transform: translateX(2px);
+    box-shadow: 4px 4px 0 var(--ink);
+    z-index: 10;
+  }
+
+  .event-row {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+
+  .event-title {
+    font-family: 'Fraunces', serif; font-weight: 600;
+    font-size: 16px; line-height: 1.2;
+    color: var(--ink);
+  }
+  .event-time {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 0.1em;
+    color: var(--ink-soft);
+    white-space: nowrap;
+  }
+  .event-location {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 11px; color: var(--ink-soft);
+    font-style: italic;
+  }
+  .event-attendees {
+    display: flex; gap: 4px; flex-wrap: wrap;
+    margin-top: 6px;
+  }
+  .attendee-chip {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--ink); background: var(--paper);
+    padding: 2px 6px; border: 1px solid var(--ink); font-weight: 500;
+  }
+  .attendee-chip .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--cc); }
+
+  .event.short {
+    padding: 5px 12px 5px 14px;
+  }
+  .event.short .event-title { font-size: 13px; line-height: 1.15; }
+  .event.short .event-location { display: none; }
+  .event.short .event-time { font-size: 9px; }
+  .event.short .event-attendees { margin-top: 3px; }
+  .event.short .attendee-chip { font-size: 8px; padding: 1px 4px; }
+
+  .event.tiny {
+    padding: 4px 8px 4px 10px;
+  }
+  .event.tiny .event-title { font-size: 12px; line-height: 1.1; }
+  .event.tiny .event-time { font-size: 9px; }
+  .event.tiny .event-location { display: none; }
+  .event.tiny .event-row { gap: 6px; }
+  .event.tiny .event-attendees { margin-top: 3px; gap: 3px; }
+  .event.tiny .attendee-chip { font-size: 8px; padding: 1px 4px; letter-spacing: 0.05em; }
+
+  /* FOOTER */
+  .footer {
+    margin-top: 24px;
+    padding-top: 10px;
+    border-top: 2px solid var(--ink);
+    display: flex; justify-content: space-between;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  .footer .ornament {
+    font-family: 'Fraunces', serif;
+    font-style: italic; color: var(--accent); letter-spacing: 0;
+  }
+</style>
+</head>
+<body>
+<div class="frame">
+
+  <header class="header-bar">
+    <div class="brand">
+      The Free Family <span class="amp">&</span> Co.
+      <span class="sub">Daily Almanac · Duvall, WA</span>
+    </div>
+    <div class="date-block">
+      <div class="dow">Thursday, the 4th of June</div>
+      <div class="meta">— End-of-Year Crunch · Wk 23 —</div>
+    </div>
+    <div class="controls">
+      <div class="view-switch">
+        <button class="active">Day</button>
+        <button>Week</button>
+      </div>
+      <button class="nav-btn">‹</button>
+      <button class="today-btn">Today</button>
+      <button class="nav-btn">›</button>
+    </div>
+    <button class="add-event">+ New Event</button>
+  </header>
+
+  <div class="member-bar">
+    <div class="member-bar-label">The Household</div>
+    <div class="chip" style="--c: var(--tyler);">
+      <div class="chip-color"></div>
+      <span class="chip-name">Tyler</span>
+      <span class="chip-count">5</span>
+    </div>
+    <div class="chip" style="--c: var(--heather);">
+      <div class="chip-color"></div>
+      <span class="chip-name">Heather</span>
+      <span class="chip-count">4</span>
+    </div>
+    <div class="chip" style="--c: var(--kai);">
+      <div class="chip-color"></div>
+      <span class="chip-name">Kai</span>
+      <span class="chip-count">3</span>
+    </div>
+    <div class="chip" style="--c: var(--maya);">
+      <div class="chip-color"></div>
+      <span class="chip-name">Maya</span>
+      <span class="chip-count">3</span>
+    </div>
+    <div class="chip" style="--c: var(--jude);">
+      <div class="chip-color"></div>
+      <span class="chip-name">Jude</span>
+      <span class="chip-count">3</span>
+    </div>
+    <div class="chip" style="--c: var(--rowan);">
+      <div class="chip-color"></div>
+      <span class="chip-name">Rowan</span>
+      <span class="chip-count">2</span>
+    </div>
+    <div class="chip" style="--c: var(--finn);">
+      <div class="chip-color"></div>
+      <span class="chip-name">Finn</span>
+      <span class="chip-count">2</span>
+    </div>
+    <div class="member-bar-actions">
+      <button>All</button>
+      <button>None</button>
+      <button>Just Me</button>
+    </div>
+  </div>
+
+  <main class="timeline">
+
+    <div class="hours-column">
+      <div class="hour-label">7<span class="ampm">AM</span></div>
+      <div class="hour-label">8</div>
+      <div class="hour-label">9<span class="ampm">AM</span></div>
+      <div class="hour-label">10</div>
+      <div class="hour-label">11</div>
+      <div class="hour-label">12<span class="ampm">PM</span></div>
+      <div class="hour-label">1</div>
+      <div class="hour-label">2</div>
+      <div class="hour-label">3</div>
+      <div class="hour-label">4</div>
+      <div class="hour-label">5</div>
+      <div class="hour-label">6<span class="ampm">PM</span></div>
+      <div class="hour-label">7</div>
+      <div class="hour-label">8</div>
+    </div>
+
+    <div class="events-column" style="height: 840px;">
+
+      <!-- Hour rulers -->
+      <div class="ruler major" style="top: 0px;"></div>
+      <div class="ruler" style="top: 60px;"></div>
+      <div class="ruler major" style="top: 120px;"></div>
+      <div class="ruler" style="top: 180px;"></div>
+      <div class="ruler" style="top: 240px;"></div>
+      <div class="ruler major" style="top: 300px;"></div>
+      <div class="ruler" style="top: 360px;"></div>
+      <div class="ruler" style="top: 420px;"></div>
+      <div class="ruler" style="top: 480px;"></div>
+      <div class="ruler" style="top: 540px;"></div>
+      <div class="ruler" style="top: 600px;"></div>
+      <div class="ruler major" style="top: 660px;"></div>
+      <div class="ruler" style="top: 720px;"></div>
+      <div class="ruler" style="top: 780px;"></div>
+
+      <!-- NOW LINE at 2:47 PM -->
+      <div class="now-line" style="top: 467px;"></div>
+
+      <!-- 9:00–10:30 AM · Tyler · Q2 Review -->
+      <div class="event in-lane short"
+           style="--c: var(--tyler); --start: 120; --dur: 90; --lane: 0; --lanes: 3;">
+        <div class="event-row">
+          <div class="event-title">Q2 Review w/ Director</div>
+          <div class="event-time">9:00 – 10:30 AM</div>
+        </div>
+        <div class="event-attendees">
+          <span class="attendee-chip"><span class="dot" style="--cc: var(--tyler);"></span>Tyler</span>
+        </div>
+      </div>
+
+      <!-- 9:00–11:30 AM · Heather + Maya + Jude · Dentist -->
+      <div class="event in-lane short"
+           style="--c: var(--heather); --start: 120; --dur: 150; --lane: 1; --lanes: 3;">
+        <div class="event-row">
+          <div class="event-title">Dentist — Maya &amp; Jude</div>
+          <div class="event-time">9:00 – 11:30 AM</div>
+        </div>
+        <div class="event-attendees">
+          <span class="attendee-chip"><span class="dot" style="--cc: var(--heather);"></span>Heather <em style="opacity:0.6; margin-left:2px;">drive</em></span>
+          <span class="attendee-chip"><span class="dot" style="--cc: var(--maya);"></span>Maya</span>
+          <span class="attendee-chip"><span class="dot" style="--cc: var(--jude);"></span>Jude</span>
+        </div>
+      </div>
+
+      <!-- 9:15–9:45 AM · Tyler · Standup -->
+      <div class="event in-lane tiny"
+           style="--c: var(--tyler); --start: 135; --dur: 30; --lane: 2; --lanes: 3;">
+        <div class="event-row">
+          <div class="event-title">Standup · Power Platform</div>
+          <div class="event-time">9:15 – 9:45 AM</div>
+        </div>
+      </div>
+
+      <!-- 12:00–1:30 PM · Kai · Robotics -->
+      <div class="event in-lane"
+           style="--c: var(--kai); --start: 300; --dur: 90; --lane: 0; --lanes: 2;">
+        <div class="event-row">
+          <div class="event-title">Robotics Club — End of Year</div>
+          <div class="event-time">12:00 – 1:30 PM</div>
+          <div class="event-location">Cedarcrest HS · Room 214</div>
+        </div>
+        <div class="event-attendees">
+          <span class="attendee-chip"><span class="dot" style="--cc: var(--kai);"></span>Kai</span>
+        </div>
+      </div>
+
+      <!-- 12:15–1:15 PM · Finn · Class picnic -->
+      <div class="event in-lane short"
+           style="--c: var(--finn); --start: 315; --dur: 60; --lane: 1; --lanes: 2;">
+        <div class="event-row">
+          <div class="event-title">Finn's class picnic</div>
+          <div class="event-time">12:15 – 1:15 PM</div>
+        </div>
+        <div class="event-attendees">
+          <span class="attendee-chip"><span class="dot" style="--cc: var(--finn);"></span>Finn</span>
+        </div>
+      </div>
+
+      <!-- 3:00–5:30 PM · Maya · Track meet -->
+      <div class="event in-lane tiny"
+           style="--c: var(--maya); --start: 480; --dur: 150; --lane: 0; --lanes: 4;">
+        <div class="event-row">
+          <div class="event-title">Maya · Track meet</div>
+          <div class="event-time">3:00 – 5:30 PM</div>
+        </div>
+        <div class="event-attendees">
+          <span class="attendee-chip"><span class="dot" style="--cc: var(--maya);"></span>Maya</span>
+          <span class="attendee-chip"><span class="dot" style="--cc: var(--tyler);"></span>Tyler <em style="opacity:0.6; margin-left:2px;">drive</em></span>
+        </div>
+      </div>
+
+      <!-- 3:00–4:45 PM · Jude · Dress rehearsal -->
+      <div class="event in-lane tiny"
+           style="--c: var(--jude); --start: 480; --dur: 105; --lane: 1; --lanes: 4;">
+        <div class="event-row">
+          <div class="event-title">Jude · Band rehearsal</div>
+          <div class="event-time">3:00 – 4:45 PM</div>
+        </div>
+        <div class="event-attendees">
+          <span class="attendee-chip"><span class="dot" style="--cc: var(--jude);"></span>Jude</span>
+          <span class="attendee-chip"><span class="dot" style="--cc: var(--tyler);"></span>Tyler <em style="opacity:0.6; margin-left:2px;">drive</em></span>
+        </div>
+      </div>
+
+      <!-- 3:15–3:45 PM · Rowan · Piano -->
+      <div class="event in-lane tiny"
+           style="--c: var(--rowan); --start: 495; --dur: 30; --lane: 2; --lanes: 4;">
+        <div class="event-row">
+          <div class="event-title">Rowan · Piano</div>
+          <div class="event-time">3:15 – 3:45 PM</div>
+        </div>
+      </div>
+
+      <!-- 3:30 PM · Finn · pickup -->
+      <div class="event in-lane tiny"
+           style="--c: var(--finn); --start: 510; --dur: 15; --lane: 3; --lanes: 4;">
+        <div class="event-row">
+          <div class="event-title">Finn · pickup</div>
+          <div class="event-time">3:30 PM</div>
+        </div>
+      </div>
+
+      <!-- 6:00–7:00 PM · Family dinner -->
+      <div class="event in-lane short"
+           style="--c: var(--heather); --start: 660; --dur: 60; --lane: 0; --lanes: 2;">
+        <div class="event-row">
+          <div class="event-title">Family dinner — taco night</div>
+          <div class="event-time">6:00 – 7:00 PM</div>
+        </div>
+        <div class="event-attendees">
+          <span class="attendee-chip"><span class="dot" style="--cc: var(--heather);"></span>Heather</span>
+          <span class="attendee-chip"><span class="dot" style="--cc: var(--tyler);"></span>Tyler</span>
+          <span class="attendee-chip"><span class="dot" style="--cc: var(--rowan);"></span>Rowan</span>
+          <span class="attendee-chip"><span class="dot" style="--cc: var(--finn);"></span>Finn</span>
+        </div>
+      </div>
+
+      <!-- 6:30–8:30 PM · Heather · Book club -->
+      <div class="event in-lane short"
+           style="--c: var(--heather); --start: 690; --dur: 120; --lane: 1; --lanes: 2;">
+        <div class="event-row">
+          <div class="event-title">Book Club · Kelly's house</div>
+          <div class="event-time">6:30 – 8:30 PM</div>
+        </div>
+        <div class="event-attendees">
+          <span class="attendee-chip"><span class="dot" style="--cc: var(--heather);"></span>Heather</span>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div>Thu · 4 June 2026 · Duvall, WA</div>
+    <div class="ornament">— ✦ —</div>
+    <div>10 Events · 71° Sunny</div>
+  </footer>
+
+</div>
+</body>
+</html>

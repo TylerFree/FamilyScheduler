@@ -1,0 +1,203 @@
+.event {
+  position: absolute;
+  top: calc(var(--start) * 1px);
+  height: calc(var(--dur) * 1px);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px 14px 8px 18px;
+  background: var(--paper-deep);
+  border: 1px solid var(--rule);
+  color: var(--ink);
+  overflow: hidden;
+  z-index: 1;
+}
+
+.event::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: var(--c);
+}
+
+.event:hover,
+.event:focus-visible {
+  background: var(--paper);
+  box-shadow: 4px 4px 0 var(--ink);
+  z-index: 10;
+}
+
+.interactive {
+  cursor: pointer;
+}
+
+.interactive:focus-visible {
+  outline: none;
+}
+
+.solo {
+  left: 12px;
+  right: 12px;
+}
+
+.inLane {
+  /* Shared lane math from HANDOFF: width and offset derive only from --lane / --lanes. */
+  left: calc(12px + (var(--lane) * ((100% - 24px - (var(--lanes) - 1) * 6px) / var(--lanes) + 6px)));
+  width: calc((100% - 24px - (var(--lanes) - 1) * 6px) / var(--lanes));
+}
+
+.eventRow {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-fraunces);
+  font-style: italic;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.time,
+.drive {
+  font-family: var(--font-jetbrains-mono);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.time {
+  color: var(--ink-soft);
+}
+
+.location {
+  margin: 0;
+  font-family: var(--font-inter-tight);
+  font-size: 11px;
+  font-style: italic;
+  color: var(--ink-soft);
+}
+
+.attendees {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: auto;
+}
+
+.attendee {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.drive {
+  color: var(--ink-faint);
+  font-size: 8px;
+  font-style: italic;
+}
+
+.short {
+  padding: 5px 12px 5px 16px;
+  gap: 4px;
+}
+
+.short .title {
+  font-size: 13px;
+}
+
+.short .location {
+  display: none;
+}
+
+.short .dot {
+  width: 5px;
+  height: 5px;
+}
+
+.tiny {
+  padding: 4px 8px 4px 12px;
+  gap: 3px;
+}
+
+.tiny .eventRow {
+  gap: 4px;
+}
+
+.tiny .title {
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tiny .time,
+.tiny .location,
+.tiny .drive {
+  display: none;
+}
+
+.tiny .attendees {
+  gap: 4px;
+  margin-top: auto;
+}
+
+.tiny .dot {
+  width: 5px;
+  height: 5px;
+}
+
+.tiny:hover::after,
+.tiny:focus-visible::after {
+  content: attr(data-time);
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  padding: 2px 4px;
+  background: var(--paper);
+  border: 1px solid var(--ink);
+  box-shadow: 4px 4px 0 var(--ink);
+  color: var(--ink);
+  font-family: var(--font-jetbrains-mono);
+  font-size: 8px;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.micro {
+  justify-content: center;
+  padding: 3px 8px 3px 12px;
+}
+
+.micro .title {
+  font-size: 11px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.micro .time,
+.micro .location,
+.micro .attendees,
+.micro .drive {
+  display: none;
+}

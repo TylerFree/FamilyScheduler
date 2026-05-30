@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Free Family — Settings</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,500;1,9..144,600&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #f4ede1;
+    --paper-deep: #ebe2d2;
+    --paper-darker: #ddd0b7;
+    --ink: #1a1814;
+    --ink-soft: #4a4438;
+    --ink-faint: #8a8170;
+    --rule: #d4c9b3;
+    --rule-soft: #e4dac6;
+    --accent: #c2410c;
+    --danger: #991b1b;
+    --success: #4a6b3a;
+
+    --tyler:    #c2410c;
+    --heather:  #7c2d6f;
+    --erin:     #1e5f74;
+    --leo:      #b4632f;
+    --anthony:  #4a6b3a;
+    --savannah: #8a4c8a;
+    --lily:     #a8651c;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Inter Tight', -apple-system, sans-serif;
+    min-height: 100vh;
+    padding: 20px 28px;
+  }
+
+  .frame { max-width: 1100px; margin: 0 auto; }
+
+  /* ============================ */
+  /* HEADER                       */
+  /* ============================ */
+
+  .header-bar {
+    border-top: 2px solid var(--ink);
+    border-bottom: 1px solid var(--ink);
+    padding: 14px 0;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .brand {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 22px;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    white-space: nowrap;
+  }
+  .brand .amp { color: var(--accent); font-weight: 400; }
+  .brand .sub {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-style: normal;
+    font-size: 8px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    font-weight: 500;
+    margin-top: 2px;
+  }
+
+  .page-title {
+    text-align: center;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 600;
+    font-size: 32px;
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+  .page-title .eyebrow {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 6px;
+  }
+
+  .back-btn {
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--ink);
+    padding: 7px 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  .back-btn:hover { background: var(--ink); color: var(--paper); }
+
+  /* ============================ */
+  /* LAYOUT                       */
+  /* ============================ */
+
+  .settings-layout {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 0;
+    margin-top: 28px;
+    min-height: 600px;
+  }
+
+  /* NAVIGATION */
+  .settings-nav {
+    border-right: 1px solid var(--rule);
+    padding-right: 24px;
+  }
+
+  .nav-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--ink);
+    margin-bottom: 12px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    margin-left: -12px;
+    margin-right: -12px;
+    cursor: pointer;
+    border-left: 2px solid transparent;
+    padding-left: 14px;
+    transition: all 0.12s;
+  }
+  .nav-item:hover {
+    background: var(--paper-deep);
+  }
+  .nav-item.active {
+    background: var(--paper-deep);
+    border-left-color: var(--accent);
+  }
+
+  .nav-item .label {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 16px;
+    font-weight: 500;
+  }
+  .nav-item.active .label {
+    font-weight: 600;
+  }
+
+  .nav-item .count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: var(--ink-faint);
+    letter-spacing: 0.1em;
+    background: var(--paper);
+    padding: 2px 6px;
+    border: 1px solid var(--rule);
+  }
+  .nav-item.active .count {
+    border-color: var(--ink);
+    color: var(--ink);
+  }
+
+  /* CONTENT AREA */
+  .settings-content {
+    padding-left: 32px;
+  }
+
+  .section {
+    margin-bottom: 36px;
+  }
+  .section:last-child { margin-bottom: 0; }
+
+  .section-title {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 600;
+    font-size: 24px;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--ink);
+    margin-bottom: 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+
+  .section-action {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    padding: 6px 12px;
+    cursor: pointer;
+  }
+  .section-action:hover { background: var(--accent); }
+
+  /* ============================ */
+  /* FAMILY MEMBER LIST           */
+  /* ============================ */
+
+  .member-list {
+    border: 1px solid var(--ink);
+    background: var(--paper-deep);
+  }
+
+  .member-row {
+    display: grid;
+    grid-template-columns: 6px 1fr 140px 100px 100px 32px;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 16px 14px 0;
+    border-bottom: 1px solid var(--rule);
+    background: var(--paper);
+    position: relative;
+    cursor: grab;
+  }
+  .member-row:last-child { border-bottom: none; }
+  .member-row:hover {
+    background: var(--paper-deep);
+  }
+
+  .member-row-color {
+    width: 6px;
+    align-self: stretch;
+    background: var(--c);
+    cursor: pointer;
+    position: relative;
+  }
+  .member-row-color::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, var(--c), transparent);
+    opacity: 0.15;
+    width: 60px;
+    pointer-events: none;
+  }
+
+  .member-row-name {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding-left: 8px;
+  }
+  .member-row-name .name {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+  .member-row-name .meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  .member-row-role {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  .role-badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border: 1px solid var(--ink);
+    background: var(--paper);
+    font-weight: 500;
+  }
+  .role-badge.parent {
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  .member-row-stat {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-soft);
+    letter-spacing: 0.05em;
+  }
+  .member-row-stat .num {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--ink);
+    display: block;
+    line-height: 1;
+    margin-bottom: 2px;
+  }
+
+  .member-edit-btn {
+    background: transparent;
+    border: 1px solid var(--rule);
+    width: 28px; height: 28px;
+    cursor: pointer;
+    font-family: 'Fraunces', serif;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ink-soft);
+  }
+  .member-edit-btn:hover {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+  }
+
+  /* DRAG handle column header */
+  .list-header {
+    display: grid;
+    grid-template-columns: 6px 1fr 140px 100px 100px 32px;
+    gap: 16px;
+    padding: 8px 16px 8px 0;
+    background: var(--paper-deep);
+    border-bottom: 1px solid var(--ink);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  .list-header > div:nth-child(1) { padding-left: 0; }
+  .list-header > div:nth-child(2) { padding-left: 8px; }
+
+  /* ============================ */
+  /* PREFERENCE ROWS              */
+  /* ============================ */
+
+  .pref-block {
+    border: 1px solid var(--ink);
+    background: var(--paper);
+  }
+
+  .pref-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 24px;
+    padding: 16px 18px;
+    border-bottom: 1px solid var(--rule);
+    align-items: center;
+  }
+  .pref-row:last-child { border-bottom: none; }
+  .pref-row:hover { background: var(--paper-deep); }
+
+  .pref-row-text { display: flex; flex-direction: column; gap: 3px; }
+
+  .pref-row-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 15px;
+    line-height: 1.2;
+  }
+
+  .pref-row-desc {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 12px;
+    color: var(--ink-soft);
+    font-style: italic;
+    line-height: 1.4;
+  }
+
+  /* TOGGLE */
+  .toggle {
+    position: relative;
+    width: 40px;
+    height: 22px;
+    background: var(--paper-deep);
+    border: 1px solid var(--ink);
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.15s;
+  }
+  .toggle::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 16px;
+    height: 16px;
+    background: var(--ink);
+    transition: all 0.15s;
+  }
+  .toggle.on {
+    background: var(--ink);
+  }
+  .toggle.on::after {
+    left: 20px;
+    background: var(--paper);
+  }
+
+  /* SELECT */
+  .pref-select {
+    padding: 6px 10px;
+    border: 1px solid var(--ink);
+    background: var(--paper);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%231a1814' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 28px;
+    min-width: 140px;
+  }
+
+  /* SEGMENTED CONTROL */
+  .segmented {
+    display: inline-flex;
+    border: 1px solid var(--ink);
+  }
+  .segmented button {
+    background: transparent;
+    border: none;
+    padding: 5px 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    color: var(--ink);
+    border-right: 1px solid var(--ink);
+  }
+  .segmented button:last-child { border-right: none; }
+  .segmented button.active {
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  /* ============================ */
+  /* INTEGRATIONS                 */
+  /* ============================ */
+
+  .integration-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .integration-card {
+    border: 1px solid var(--ink);
+    background: var(--paper);
+    padding: 16px;
+    display: grid;
+    grid-template-columns: 40px 1fr auto;
+    gap: 14px;
+    align-items: center;
+  }
+
+  .integration-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--paper-deep);
+    border: 1px solid var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 22px;
+    font-weight: 700;
+  }
+  .integration-icon.google { background: #fff; }
+  .integration-icon.microsoft { background: #fff; }
+  .integration-icon.apple { background: var(--ink); color: var(--paper); }
+
+  .integration-info { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+  .integration-name {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 15px;
+    line-height: 1.1;
+  }
+  .integration-status {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  .integration-status.connected {
+    color: var(--success);
+  }
+  .integration-status .dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--ink-faint);
+    margin-right: 4px;
+    vertical-align: middle;
+  }
+  .integration-status.connected .dot {
+    background: var(--success);
+  }
+
+  .integration-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    background: transparent;
+    border: 1px solid var(--ink);
+    padding: 6px 10px;
+    cursor: pointer;
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .integration-btn:hover { background: var(--ink); color: var(--paper); }
+  .integration-btn.connected {
+    background: var(--paper-deep);
+    color: var(--ink-soft);
+  }
+
+  /* DANGER ZONE */
+  .danger-zone {
+    border: 1px solid var(--danger);
+    background: rgba(153, 27, 27, 0.04);
+    padding: 16px 18px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 24px;
+    align-items: center;
+  }
+  .danger-zone .text { display: flex; flex-direction: column; gap: 3px; }
+  .danger-zone .title {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--danger);
+  }
+  .danger-zone .desc {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 12px;
+    color: var(--ink-soft);
+    font-style: italic;
+  }
+  .btn-danger {
+    background: transparent;
+    border: 1px solid var(--danger);
+    color: var(--danger);
+    padding: 8px 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    font-weight: 500;
+  }
+  .btn-danger:hover {
+    background: var(--danger);
+    color: var(--paper);
+  }
+
+  /* FOOTER */
+  .footer {
+    margin-top: 32px;
+    padding-top: 12px;
+    border-top: 2px solid var(--ink);
+    display: flex;
+    justify-content: space-between;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  .footer .ornament {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    color: var(--accent);
+    letter-spacing: 0;
+  }
+</style>
+</head>
+<body>
+<div class="frame">
+
+  <!-- HEADER -->
+  <header class="header-bar">
+    <div class="brand">
+      The Free Family <span class="amp">&</span> Co.
+      <span class="sub">Settings · Duvall, WA</span>
+    </div>
+    <div class="page-title">
+      <span class="eyebrow">— App Settings —</span>
+      Manage Your Household
+    </div>
+    <button class="back-btn">‹ Back to Calendar</button>
+  </header>
+
+  <div class="settings-layout">
+
+    <!-- NAVIGATION -->
+    <nav class="settings-nav">
+      <div class="nav-label">Settings</div>
+      <div class="nav-item active">
+        <span class="label">Family</span>
+        <span class="count">7</span>
+      </div>
+      <div class="nav-item">
+        <span class="label">Display</span>
+      </div>
+      <div class="nav-item">
+        <span class="label">Notifications</span>
+        <span class="count">3</span>
+      </div>
+      <div class="nav-item">
+        <span class="label">Integrations</span>
+        <span class="count">2</span>
+      </div>
+      <div class="nav-item">
+        <span class="label">Account</span>
+      </div>
+    </nav>
+
+    <!-- CONTENT -->
+    <div class="settings-content">
+
+      <!-- ========================= -->
+      <!-- FAMILY MEMBERS            -->
+      <!-- ========================= -->
+      <div class="section">
+        <div class="section-title">
+          The Household
+          <button class="section-action">+ Add Member</button>
+        </div>
+
+        <div class="member-list">
+
+          <div class="list-header">
+            <div></div>
+            <div>Name</div>
+            <div>Role</div>
+            <div>Default View</div>
+            <div>This Month</div>
+            <div></div>
+          </div>
+
+          <div class="member-row" style="--c: var(--tyler);">
+            <div class="member-row-color"></div>
+            <div class="member-row-name">
+              <span class="name">Tyler</span>
+              <span class="meta">Microsoft · Data Eng</span>
+            </div>
+            <div class="member-row-role">
+              <span class="role-badge parent">Parent</span>
+            </div>
+            <div class="member-row-role">
+              <span class="role-badge">Owner</span>
+            </div>
+            <div class="member-row-stat">
+              <span class="num">72</span>events
+            </div>
+            <button class="member-edit-btn">›</button>
+          </div>
+
+          <div class="member-row" style="--c: var(--heather);">
+            <div class="member-row-color"></div>
+            <div class="member-row-name">
+              <span class="name">Heather</span>
+              <span class="meta">Spouse</span>
+            </div>
+            <div class="member-row-role">
+              <span class="role-badge parent">Parent</span>
+            </div>
+            <div class="member-row-role">
+              <span class="role-badge">Editor</span>
+            </div>
+            <div class="member-row-stat">
+              <span class="num">61</span>events
+            </div>
+            <button class="member-edit-btn">›</button>
+          </div>
+
+          <div class="member-row" style="--c: var(--erin);">
+            <div class="member-row-color"></div>
+            <div class="member-row-name">
+              <span class="name">Erin</span>
+              <span class="meta">11th grade · Cedarcrest HS</span>
+            </div>
+            <div class="member-row-role">
+              <span class="role-badge">Child</span>
+            </div>
+            <div class="member-row-role">
+              <span class="role-badge">View only</span>
+            </div>
+            <div class="member-row-stat">
+              <span class="num">44</span>events
+            </div>
+            <button class="member-edit-btn">›</button>
+          </div>
+
+          <div class="member-row" style="--c: var(--leo);">
+            <div class="member-row-color"></div>
+            <div class="member-row-name">
+              <span class="name">Leo</span>
+              <span class="meta">9th grade · Cedarcrest HS</span>
+            </div>
+            <div class="member-row-role">
+              <span class="role-badge">Child</span>
+            </div>
+            <div class="member-row-role">
+              <span class="role-badge">View only</span>
+            </div>
+            <div class="member-row-stat">
+              <span class="num">56</span>events
+            </div>
+            <button class="member-edit-btn">›</button>
+          </div>
+
+          <div class="member-row" style="--c: var(--anthony);">
+            <div class="member-row-color"></div>
+            <div class="member-row-name">
+              <span class="name">Anthony</span>
+              <span class="meta">7th grade · Cedarcrest MS</span>
+            </div>
+            <div class="member-row-role">
+              <span class="role-badge">Child</span>
+            </div>
+            <div class="member-row-role">
+              <span class="role-badge">View only</span>
+            </div>
+            <div class="member-row-stat">
+              <span class="num">38</span>events
+            </div>
+            <button class="member-edit-btn">›</button>
+          </div>
+
+          <div class="member-row" style="--c: var(--savannah);">
+            <div class="member-row-color"></div>
+            <div class="member-row-name">
+              <span class="name">Savannah</span>
+              <span class="meta">5th grade · Cherry Valley</span>
+            </div>
+            <div class="member-row-role">
+              <span class="role-badge">Child</span>
+            </div>
+            <div class="member-row-role">
+              <span class="role-badge">View only</span>
+            </div>
+            <div class="member-row-stat">
+              <span class="num">32</span>events
+            </div>
+            <button class="member-edit-btn">›</button>
+          </div>
+
+          <div class="member-row" style="--c: var(--lily);">
+            <div class="member-row-color"></div>
+            <div class="member-row-name">
+              <span class="name">Lily</span>
+              <span class="meta">2nd grade · Cherry Valley</span>
+            </div>
+            <div class="member-row-role">
+              <span class="role-badge">Child</span>
+            </div>
+            <div class="member-row-role">
+              <span class="role-badge">No access</span>
+            </div>
+            <div class="member-row-stat">
+              <span class="num">28</span>events
+            </div>
+            <button class="member-edit-btn">›</button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ========================= -->
+      <!-- DISPLAY PREFERENCES       -->
+      <!-- ========================= -->
+      <div class="section">
+        <div class="section-title">Display</div>
+
+        <div class="pref-block">
+
+          <div class="pref-row">
+            <div class="pref-row-text">
+              <div class="pref-row-title">Default view</div>
+              <div class="pref-row-desc">Which view to open when launching the app</div>
+            </div>
+            <div class="segmented">
+              <button>Day</button>
+              <button class="active">Week</button>
+              <button>Month</button>
+            </div>
+          </div>
+
+          <div class="pref-row">
+            <div class="pref-row-text">
+              <div class="pref-row-title">Week starts on</div>
+              <div class="pref-row-desc">First column of the weekly view</div>
+            </div>
+            <div class="segmented">
+              <button>Sun</button>
+              <button class="active">Mon</button>
+            </div>
+          </div>
+
+          <div class="pref-row">
+            <div class="pref-row-text">
+              <div class="pref-row-title">Visible hours</div>
+              <div class="pref-row-desc">Time range shown on day and week views</div>
+            </div>
+            <select class="pref-select">
+              <option>6 AM – 10 PM</option>
+              <option selected>7 AM – 9 PM</option>
+              <option>8 AM – 8 PM</option>
+              <option>All 24 hours</option>
+            </select>
+          </div>
+
+          <div class="pref-row">
+            <div class="pref-row-text">
+              <div class="pref-row-title">Time format</div>
+              <div class="pref-row-desc">How times display throughout the app</div>
+            </div>
+            <div class="segmented">
+              <button class="active">12-hour</button>
+              <button>24-hour</button>
+            </div>
+          </div>
+
+          <div class="pref-row">
+            <div class="pref-row-text">
+              <div class="pref-row-title">Show weather in footer</div>
+              <div class="pref-row-desc">Display current conditions for Duvall, WA</div>
+            </div>
+            <div class="toggle on"></div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ========================= -->
+      <!-- NOTIFICATIONS             -->
+      <!-- ========================= -->
+      <div class="section">
+        <div class="section-title">Notifications</div>
+
+        <div class="pref-block">
+
+          <div class="pref-row">
+            <div class="pref-row-text">
+              <div class="pref-row-title">Default reminder</div>
+              <div class="pref-row-desc">How far ahead to notify for new events</div>
+            </div>
+            <select class="pref-select">
+              <option>None</option>
+              <option>10 min before</option>
+              <option selected>15 min before</option>
+              <option>30 min before</option>
+              <option>1 hour before</option>
+            </select>
+          </div>
+
+          <div class="pref-row">
+            <div class="pref-row-text">
+              <div class="pref-row-title">Daily digest</div>
+              <div class="pref-row-desc">A morning summary of the day's events at 6:30 AM</div>
+            </div>
+            <div class="toggle on"></div>
+          </div>
+
+          <div class="pref-row">
+            <div class="pref-row-text">
+              <div class="pref-row-title">Sunday week-ahead preview</div>
+              <div class="pref-row-desc">A look at the coming week, sent Sunday evening</div>
+            </div>
+            <div class="toggle on"></div>
+          </div>
+
+          <div class="pref-row">
+            <div class="pref-row-text">
+              <div class="pref-row-title">Notify when someone adds an event involving me</div>
+              <div class="pref-row-desc">Heather or Tyler will be alerted when added as a driver or attendee</div>
+            </div>
+            <div class="toggle on"></div>
+          </div>
+
+          <div class="pref-row">
+            <div class="pref-row-text">
+              <div class="pref-row-title">Quiet hours</div>
+              <div class="pref-row-desc">Don't send notifications during these hours</div>
+            </div>
+            <select class="pref-select">
+              <option>Off</option>
+              <option selected>9 PM – 7 AM</option>
+              <option>10 PM – 6 AM</option>
+              <option>Custom...</option>
+            </select>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ========================= -->
+      <!-- INTEGRATIONS              -->
+      <!-- ========================= -->
+      <div class="section">
+        <div class="section-title">Integrations</div>
+
+        <div class="integration-grid">
+
+          <div class="integration-card">
+            <div class="integration-icon microsoft">M</div>
+            <div class="integration-info">
+              <span class="integration-name">Microsoft 365</span>
+              <span class="integration-status connected"><span class="dot"></span>Tyler · Synced 2 min ago</span>
+            </div>
+            <button class="integration-btn connected">Manage</button>
+          </div>
+
+          <div class="integration-card">
+            <div class="integration-icon google">G</div>
+            <div class="integration-info">
+              <span class="integration-name">Google Calendar</span>
+              <span class="integration-status connected"><span class="dot"></span>Heather · Synced 8 min ago</span>
+            </div>
+            <button class="integration-btn connected">Manage</button>
+          </div>
+
+          <div class="integration-card">
+            <div class="integration-icon apple">A</div>
+            <div class="integration-info">
+              <span class="integration-name">Apple Calendar</span>
+              <span class="integration-status"><span class="dot"></span>Not connected</span>
+            </div>
+            <button class="integration-btn">Connect</button>
+          </div>
+
+          <div class="integration-card">
+            <div class="integration-icon" style="background: var(--paper-deep); color: var(--ink);">S</div>
+            <div class="integration-info">
+              <span class="integration-name">School Calendar (RSD)</span>
+              <span class="integration-status"><span class="dot"></span>Not connected · ICS feed</span>
+            </div>
+            <button class="integration-btn">Add Feed</button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ========================= -->
+      <!-- DANGER ZONE               -->
+      <!-- ========================= -->
+      <div class="section">
+        <div class="section-title">Danger Zone</div>
+        <div class="danger-zone">
+          <div class="text">
+            <span class="title">Export &amp; reset calendar data</span>
+            <span class="desc">Download a backup of all events, then optionally clear everything to start fresh. Cannot be undone.</span>
+          </div>
+          <button class="btn-danger">Export &amp; Reset</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div>Settings · Family of 7 · Duvall, WA</div>
+    <div class="ornament">— ✦ —</div>
+    <div>Version 1.0 · Last synced 2 min ago</div>
+  </footer>
+
+</div>
+</body>
+</html>

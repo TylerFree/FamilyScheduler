@@ -1,0 +1,449 @@
+.weekView {
+  --hour-height: 36px;
+  max-width: var(--max-width-calendar);
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 0 14px;
+  border-top: 2px solid var(--ink);
+  border-bottom: 1px solid var(--ink);
+}
+
+.kicker,
+.meta,
+.dayLabel,
+.dayCount,
+.allDayLabel,
+.hourLabel,
+.allDayEvent,
+.weekEvent::after {
+  font-family: var(--font-jetbrains-mono);
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.kicker {
+  margin: 0;
+  font-size: 9px;
+  color: var(--ink-faint);
+}
+
+.headingRow {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.heading {
+  margin: 0;
+  font-family: var(--font-fraunces);
+  font-style: italic;
+  font-weight: 600;
+  font-size: 30px;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.meta {
+  margin: 0;
+  font-size: 10px;
+  color: var(--ink-faint);
+}
+
+.surface {
+  --col-count: 7;
+  overflow-x: auto;
+  padding-top: 4px;
+  background: var(--paper);
+}
+
+.mobileNav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0 6px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.mobileNavEdge {
+  flex: 1;
+  display: flex;
+}
+
+.mobileNavEdgeEnd {
+  justify-content: flex-end;
+}
+
+.mobileNavBtn,
+.mobileNavLabel {
+  font-family: var(--font-jetbrains-mono);
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.mobileNavBtn {
+  padding: 5px 10px;
+  border: 1px solid var(--ink);
+  border-radius: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 9px;
+  cursor: pointer;
+  box-shadow: 3px 3px 0 var(--ink);
+}
+
+.mobileNavBtn:hover,
+.mobileNavBtn:focus-visible {
+  background: var(--paper-deep);
+}
+
+.mobileNavLabel {
+  font-size: 10px;
+  color: var(--ink);
+}
+
+.headerRow,
+.allDayRow,
+.timeGrid {
+  display: grid;
+  grid-template-columns: 48px repeat(var(--col-count), minmax(116px, 1fr));
+}
+
+.cornerCell {
+  border-right: 1px solid var(--rule);
+  border-bottom: 2px solid var(--ink);
+}
+
+.dayHeader {
+  padding: 10px 8px 8px;
+  border-right: 1px solid var(--rule);
+  border-bottom: 2px solid var(--ink);
+  text-align: center;
+}
+
+.dayHeader:last-child,
+.allDayCell:last-child,
+.dayColumn:last-child {
+  border-right: none;
+}
+
+.dayLabel {
+  margin-bottom: 4px;
+  font-size: 9px;
+  color: var(--ink-faint);
+}
+
+.dayNumber {
+  font-family: var(--font-fraunces);
+  font-style: italic;
+  font-weight: 500;
+  font-size: 22px;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.dayCount {
+  margin-top: 4px;
+  font-size: 9px;
+  color: var(--ink-faint);
+}
+
+.todayHeader {
+  background: var(--paper-deep);
+}
+
+.todayHeader .dayLabel,
+.todayHeader .dayNumber {
+  color: var(--accent);
+}
+
+.weekendHeader {
+  background: rgba(0, 0, 0, 0.015);
+}
+
+.allDayRow {
+  min-height: calc(var(--all-day-rows) * 24px + 12px);
+  border-bottom: 1px solid var(--ink);
+}
+
+.allDayLabel {
+  padding: 10px 8px 0 0;
+  border-right: 1px solid var(--rule);
+  font-size: 9px;
+  text-align: right;
+  color: var(--ink-faint);
+}
+
+.allDayCell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 6px;
+  border-right: 1px solid var(--rule);
+}
+
+.allDayEvent {
+  position: relative;
+  min-height: 20px;
+  padding: 4px 8px 4px 12px;
+  border: 1px solid var(--rule);
+  color: var(--ink);
+  overflow: hidden;
+}
+
+.allDayEvent::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--c);
+  opacity: 0.1;
+}
+
+.allDayEvent::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: var(--c);
+}
+
+.allDayEventTitle {
+  position: relative;
+  z-index: 1;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 9px;
+}
+
+.scrollViewport {
+  max-height: min(70vh, calc(14 * var(--hour-height)));
+  overflow-y: auto;
+}
+
+.timeGutter {
+  position: relative;
+  border-right: 1px solid var(--rule);
+}
+
+.hourLabel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  padding-right: 8px;
+  font-size: 9px;
+  line-height: 1;
+  text-align: right;
+  color: var(--ink-faint);
+}
+
+.hourLabelEnd {
+  transform: translateY(-100%);
+}
+
+.dayColumn {
+  position: relative;
+  border-right: 1px solid var(--rule);
+}
+
+.todayColumn {
+  background: rgba(194, 65, 12, 0.03);
+}
+
+.weekendColumn {
+  background: rgba(0, 0, 0, 0.015);
+}
+
+.rule {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--rule);
+}
+
+.nowLine {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--start) * var(--hour-height) / 60);
+  height: 1px;
+  background: var(--accent);
+  z-index: 5;
+  pointer-events: none;
+}
+
+.nowLine::before {
+  content: "";
+  position: absolute;
+  left: -4px;
+  top: -4px;
+  width: 8px;
+  height: 8px;
+  background: var(--accent);
+  border-radius: 50%;
+}
+
+.weekEvent {
+  position: absolute;
+  top: calc(var(--start) * var(--hour-height) / 60);
+  height: calc(var(--dur) * var(--hour-height) / 60);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 4px 6px 4px 10px;
+  border: 1px solid var(--rule);
+  background: var(--paper-deep);
+  color: var(--ink);
+  overflow: hidden;
+  z-index: 1;
+}
+
+.weekEvent::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: var(--c);
+}
+
+.weekEvent::after {
+  content: attr(data-time);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-4px);
+  padding: 4px 8px;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 8px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 20;
+}
+
+.weekEvent:hover,
+.weekEvent:focus-visible {
+  background: var(--paper);
+  box-shadow: 4px 4px 0 var(--ink);
+  z-index: 10;
+}
+
+@media (max-width: 640px) {
+  .surface {
+    overflow-x: hidden;
+  }
+
+  .headerRow,
+  .allDayRow,
+  .timeGrid {
+    grid-template-columns: 48px repeat(var(--col-count), 1fr);
+  }
+
+  .scrollViewport {
+    max-height: min(60vh, calc(14 * var(--hour-height)));
+  }
+}
+
+.weekEvent:hover::after,
+.weekEvent:focus-visible::after {
+  opacity: 1;
+}
+
+.weekEventSolo {
+  left: 4px;
+  right: 4px;
+}
+
+.weekEventInLane {
+  /* Weekly overlap math stays in CSS so width/offset continue deriving from --lane and --lanes only. */
+  left: calc(4px + (var(--lane) * ((100% - 8px - (var(--lanes) - 1) * 4px) / var(--lanes) + 4px)));
+  width: calc((100% - 8px - (var(--lanes) - 1) * 4px) / var(--lanes));
+}
+
+.weekEventTitle {
+  margin: 0;
+  font-family: var(--font-fraunces);
+  font-style: italic;
+  font-weight: 600;
+  font-size: 11px;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  text-overflow: ellipsis;
+}
+
+.weekEventDots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  margin-top: auto;
+}
+
+.weekEventDot {
+  width: 6px;
+  height: 6px;
+  background: var(--dot-color);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.weekEventShort {
+  padding: 3px 5px 3px 9px;
+  gap: 3px;
+}
+
+.weekEventShort .weekEventTitle {
+  font-size: 10px;
+}
+
+.weekEventTiny {
+  padding: 3px 4px 3px 8px;
+  gap: 2px;
+}
+
+.weekEventTiny .weekEventTitle {
+  -webkit-line-clamp: 1;
+  font-size: 10px;
+}
+
+.weekEventTiny .weekEventDot {
+  width: 5px;
+  height: 5px;
+}
+
+.weekEventMicro {
+  justify-content: center;
+  padding: 2px 4px 2px 8px;
+}
+
+.weekEventMicro .weekEventTitle {
+  -webkit-line-clamp: 1;
+  font-size: 10px;
+}
+
+.weekEventMicro .weekEventDots {
+  gap: 2px;
+}
+
+.weekEventMicro .weekEventDot {
+  width: 5px;
+  height: 5px;
+}

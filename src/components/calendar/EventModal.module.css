@@ -1,0 +1,547 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 20px;
+  background: rgba(26, 24, 20, 0.6);
+  z-index: 200;
+}
+
+.dialog {
+  width: min(100%, 560px);
+  max-height: calc(100vh - 64px);
+  display: flex;
+  flex-direction: column;
+  background: var(--paper);
+  border: 1px solid var(--ink);
+  box-shadow: 4px 4px 0 var(--ink);
+  overflow: hidden;
+}
+
+.header,
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--ink);
+}
+
+.footer {
+  border-top: 1px solid var(--ink);
+  border-bottom: none;
+  background: var(--paper-deep);
+}
+
+.eyebrow,
+.label,
+.subLabel,
+.attendeeName,
+.attendeeMeta,
+.driveButton,
+.bulkActions button,
+.ownerButton,
+.button,
+.previewLabel,
+.previewChip,
+.toggleLabel {
+  font-family: var(--font-jetbrains-mono);
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.eyebrow {
+  margin: 0 0 4px;
+  font-size: 10px;
+  color: var(--accent);
+}
+
+.heading {
+  margin: 0;
+  font-family: var(--font-fraunces);
+  font-style: italic;
+  font-weight: 600;
+  font-size: 26px;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.closeButton,
+.button,
+.attendeeTile,
+.ownerButton,
+.toggle,
+.input,
+.titleInput,
+.textarea {
+  border-radius: 0;
+}
+
+.closeButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--ink);
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--font-fraunces);
+  font-size: 14px;
+}
+
+.form {
+  min-height: 0;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+.body {
+  padding: 20px 24px;
+  overflow-y: auto;
+}
+
+.field {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.field:last-child {
+  margin-bottom: 0;
+}
+
+.label,
+.subLabel {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  font-size: 10px;
+  color: var(--ink-soft);
+}
+
+.subLabel {
+  font-size: 9px;
+  color: var(--ink-faint);
+}
+
+.required {
+  color: var(--accent);
+}
+
+.labelWithIcon {
+  gap: 8px;
+}
+
+.icon {
+  display: inline-flex;
+  width: 12px;
+  height: 12px;
+}
+
+.icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.titleInput,
+.input,
+.textarea {
+  width: 100%;
+  border: 1px solid var(--ink);
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.titleInput,
+.input {
+  padding: 10px 12px;
+}
+
+.titleInput {
+  font-family: var(--font-fraunces);
+  font-style: italic;
+  font-size: 26px;
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.input {
+  font-family: var(--font-fraunces);
+  font-style: italic;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.monoInput,
+.selectInput {
+  font-family: var(--font-jetbrains-mono);
+  font-style: normal;
+  font-size: 11px;
+}
+
+.inputGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: 12px;
+}
+
+.subField {
+  display: grid;
+  gap: 6px;
+}
+
+.timeRow {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  transition: opacity 120ms ease;
+}
+
+.timeRowHidden {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  width: fit-content;
+  padding: 0;
+  color: var(--ink-soft);
+}
+
+.toggleTrack {
+  position: relative;
+  width: 42px;
+  height: 22px;
+  border: 1px solid var(--ink);
+  background: var(--rule);
+}
+
+.toggleThumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  background: var(--paper);
+  border: 1px solid var(--ink);
+  transition: transform 120ms ease;
+}
+
+.toggleOn .toggleTrack {
+  background: var(--ink);
+}
+
+.toggleOn .toggleThumb {
+  transform: translateX(20px);
+  background: var(--paper);
+}
+
+.toggleLabel {
+  font-size: 10px;
+}
+
+.attendeeGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.attendeeTile {
+  display: flex;
+  min-width: 0;
+  border: 1px solid var(--ink);
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.selected {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.ownerLocked {
+  box-shadow: inset 0 0 0 1px var(--paper-darker);
+}
+
+.attendeeButton {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 8px 8px 0;
+  color: inherit;
+}
+
+.attendeeStripe {
+  width: 4px;
+  align-self: stretch;
+  flex-shrink: 0;
+  background: var(--c);
+}
+
+.attendeeName {
+  min-width: 0;
+  font-size: 10px;
+  line-height: 1.3;
+  text-align: left;
+}
+
+.attendeeMeta {
+  margin-left: auto;
+  font-size: 8px;
+  opacity: 0.8;
+}
+
+.driveButton {
+  align-self: center;
+  margin: 6px 6px 6px 0;
+  padding: 4px 6px;
+  border: 1px solid currentColor;
+  color: inherit;
+  font-size: 8px;
+  line-height: 1;
+}
+
+.driveActive {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.bulkActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.bulkActions button,
+.ownerButton {
+  color: var(--ink-soft);
+}
+
+.bulkActions button {
+  padding: 0;
+  font-size: 9px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  padding: 8px 10px;
+  border-left: 4px solid var(--ink);
+  background: var(--paper-deep);
+}
+
+.previewLabel {
+  font-size: 9px;
+  color: var(--ink-faint);
+}
+
+.previewChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 6px;
+  border: 1px solid var(--ink);
+  background: var(--paper);
+  font-size: 9px;
+  color: var(--ink);
+}
+
+.previewDot {
+  width: 6px;
+  height: 6px;
+  flex-shrink: 0;
+}
+
+.roleTag {
+  font-family: var(--font-inter-tight);
+  font-size: 10px;
+  font-style: italic;
+  color: var(--ink-faint);
+}
+
+.ownerRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.ownerButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px 6px 6px;
+  border: 1px solid var(--rule);
+  background: var(--paper);
+  font-size: 9px;
+}
+
+.ownerSelected {
+  border-color: var(--ink);
+  background: var(--paper-deep);
+  color: var(--ink);
+}
+
+.ownerSwatch {
+  width: 10px;
+  height: 10px;
+  background: var(--c);
+}
+
+.selectInput {
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--ink) 50%), linear-gradient(135deg, var(--ink) 50%, transparent 50%);
+  background-position: calc(100% - 18px) calc(50% - 2px), calc(100% - 12px) calc(50% - 2px);
+  background-size: 6px 6px, 6px 6px;
+  background-repeat: no-repeat;
+  padding-right: 32px;
+}
+
+.textarea {
+  min-height: 88px;
+  padding: 10px 12px;
+  resize: vertical;
+  font-family: var(--font-inter-tight);
+  font-size: 14px;
+  font-style: italic;
+  line-height: 1.4;
+  color: var(--ink-soft);
+}
+
+.helperText,
+.errorText {
+  margin: 0;
+  font-family: var(--font-inter-tight);
+  font-size: 12px;
+  font-style: italic;
+  line-height: 1.4;
+}
+
+.helperText {
+  color: var(--ink-faint);
+}
+
+.errorText {
+  color: var(--danger);
+}
+
+.footerLeft,
+.footerRight {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.button {
+  padding: 9px 16px;
+  border: 1px solid var(--ink);
+  font-size: 10px;
+  line-height: 1;
+}
+
+.cancelButton {
+  background: transparent;
+  color: var(--ink);
+}
+
+.saveButton {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.deleteButton {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.closeButton:focus-visible,
+.button:focus-visible,
+.toggle:focus-visible,
+.attendeeButton:focus-visible,
+.driveButton:focus-visible,
+.ownerButton:focus-visible,
+.bulkActions button:focus-visible,
+.titleInput:focus-visible,
+.input:focus-visible,
+.textarea:focus-visible {
+  outline: none;
+  background-color: var(--paper-deep);
+}
+
+.saveButton:focus-visible,
+.saveButton:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.cancelButton:hover,
+.closeButton:hover {
+  background: var(--paper-deep);
+}
+
+.deleteButton:hover,
+.deleteButton:focus-visible {
+  background: var(--danger);
+  color: var(--paper);
+}
+
+.selected .attendeeButton:focus-visible,
+.selected .driveButton:focus-visible {
+  background: rgba(244, 237, 225, 0.14);
+}
+
+@media (max-width: 720px) {
+  .overlay {
+    padding: 16px;
+  }
+
+  .dialog {
+    max-height: calc(100vh - 32px);
+  }
+
+  .inputGrid,
+  .attendeeGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .timeRow {
+    grid-template-columns: 1fr;
+  }
+
+  .footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .footerLeft,
+  .footerRight {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .footerRight {
+    flex-direction: column;
+  }
+
+  .button {
+    width: 100%;
+  }
+}

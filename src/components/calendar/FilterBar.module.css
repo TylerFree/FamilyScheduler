@@ -1,0 +1,91 @@
+.bar {
+  overflow-x: auto;
+  padding: 10px 12px;
+  border: 1px solid var(--rule);
+  background: var(--rule-soft);
+}
+
+.track {
+  display: inline-flex;
+  gap: 6px;
+  min-width: max-content;
+}
+
+.chip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+  min-height: 30px;
+  padding: 7px 12px;
+  border: 1px solid var(--rule);
+  background: var(--paper);
+  color: var(--ink-soft);
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease,
+    color 150ms ease;
+}
+
+.chip:hover,
+.chip:focus-visible {
+  background: var(--paper-deep);
+  border-color: var(--ink-soft);
+  outline: none;
+}
+
+.allChip {
+  justify-content: center;
+}
+
+.activeAllChip,
+.activeMemberChip {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.activeAllChip:hover,
+.activeAllChip:focus-visible,
+.activeMemberChip:hover,
+.activeMemberChip:focus-visible {
+  background: var(--ink);
+  border-color: var(--ink);
+}
+
+.memberChip {
+  padding-left: 10px;
+}
+
+.activeMemberChip {
+  padding-left: 16px;
+}
+
+.activeMemberChip::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  bottom: -1px;
+  left: -1px;
+  width: 4px;
+  background: var(--c);
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  flex: 0 0 6px;
+  border-radius: 999px;
+  background: var(--c);
+}
+
+.label {
+  line-height: 1;
+}
