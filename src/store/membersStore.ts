@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { FAMILY_MEMBERS, type Member, type MemberId } from "@/types/index";
+import { getPersistentStorage, hasPersistedState } from "./storage";
 
 export const MEMBERS_STORAGE_KEY = "familyscheduler-members";
 const MEMBER_COLOR_FALLBACK = "#888";
@@ -27,7 +28,7 @@ export const useMembersStore = create<MembersState>()(
       initializeMembers: () => {
         const persistedMembers = get().members;
 
-        if (persistedMembers.length === 0 || localStorage.getItem(MEMBERS_STORAGE_KEY) === null) {
+        if (persistedMembers.length === 0 || !hasPersistedState(MEMBERS_STORAGE_KEY)) {
           set({ members: [...FAMILY_MEMBERS].sort(compareMembers) });
         }
       },
@@ -61,7 +62,7 @@ export const useMembersStore = create<MembersState>()(
     }),
     {
       name: MEMBERS_STORAGE_KEY,
-      storage: createJSONStorage(() => localStorage),
+      storage: createJSONStorage(getPersistentStorage),
       partialize: (state) => ({ members: state.members }),
     },
   ),

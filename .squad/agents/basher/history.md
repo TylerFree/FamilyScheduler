@@ -18,6 +18,10 @@
 
 ## Learnings
 
+### SSR-Safe Persisted Store Pattern (2026-05-31)
+
+Yen fixed the `/settings` crash by moving all persisted Zustand storage through `src/store/storage.ts`. Basher-owned store work should use this pattern for any new persisted store: `storage: createJSONStorage(getPersistentStorage)` and `hasPersistedState(storageKey)` for browser key checks. Do not reference bare `localStorage` at module-eval time; App Router SSR/RSC/prerender paths can evaluate the module without `window`.
+
 ### Scaffold Complete — Store and Types Ready (2026-05-28)
 
 Rusty has completed the Next.js scaffold. Key facts for your store and type work:

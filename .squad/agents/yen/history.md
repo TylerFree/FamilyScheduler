@@ -12,6 +12,10 @@
 
 ## Learnings
 
+### Settings SSR Storage Guard (2026-05-31)
+
+Root cause: the settings route imports persisted Zustand stores, and the store modules used bare `localStorage` references in `createJSONStorage` and seed checks. That is unsafe anywhere the module is evaluated without a browser storage object during SSR/RSC/prerender paths. Fix pattern: route all persisted Zustand storage through an SSR-safe helper that returns a no-op `StateStorage` when `window` is unavailable, and guard key-existence checks with `typeof window !== "undefined"`.
+
 ### Archive Summary (2026-05-28 — 2026-06-05)
 
 Previous sprint delivered: Mobile WeekView, Date Navigation, Settings, FilterBar, EventModal, WeekView, EventChip+DayView, Lane tests, Zustand, Recurrence Expansion (89/89 tests, build/lint clean).
@@ -177,3 +181,4 @@ Yen completed custom recurrence configuration panel in EventModal. Users can now
 - **RecurrenceRule outputs:** Clean JSON shapes for localStorage/Zustand (weekly: byDay array with RFC codes; monthly/yearly: simple same-day repeats)
 - **Status:** 92/92 tests passing (up from 89), lint clean, build succeeds
 - **Next:** Linus to add end-condition + by-day edge tests; Basher to verify RecurrenceRule shape expansion
+

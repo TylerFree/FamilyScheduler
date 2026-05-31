@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { expandRecurringEventsForDate, expandRecurringEventsForDateRange } from "@/lib/calendar/recurrence";
 import type { Event, IsoDateString } from "@/types/index";
+import { getPersistentStorage, hasPersistedState } from "./storage";
 
 export const EVENTS_STORAGE_KEY = "familyscheduler-events";
 const DEFAULT_EVENT_TIMESTAMP = "07:00:00.000Z";
@@ -218,7 +219,7 @@ export const useEventsStore = create<EventsState>()(
       initializeEvents: () => {
         const persistedEvents = get().events;
 
-        if (persistedEvents.length === 0 || localStorage.getItem(EVENTS_STORAGE_KEY) === null) {
+        if (persistedEvents.length === 0 || !hasPersistedState(EVENTS_STORAGE_KEY)) {
           set({ events: createSampleEvents() });
         }
       },
@@ -260,7 +261,7 @@ export const useEventsStore = create<EventsState>()(
     }),
     {
       name: EVENTS_STORAGE_KEY,
-      storage: createJSONStorage(() => localStorage),
+      storage: createJSONStorage(getPersistentStorage),
       partialize: (state) => ({ events: state.events }),
     },
   ),

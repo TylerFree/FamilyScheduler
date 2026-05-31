@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { FAMILY_MEMBER_IDS, FAMILY_MEMBERS, type Household, type IsoDateString, type MemberId } from "@/types/index";
+import { getPersistentStorage, hasPersistedState } from "./storage";
 
 export const HOUSEHOLD_STORAGE_KEY = "familyscheduler-household";
 
@@ -47,7 +48,7 @@ export const useHouseholdStore = create<HouseholdState>()(
       initializeHousehold: () => {
         const persistedHousehold = get().household;
 
-        if (!persistedHousehold.name || localStorage.getItem(HOUSEHOLD_STORAGE_KEY) === null) {
+        if (!persistedHousehold.name || !hasPersistedState(HOUSEHOLD_STORAGE_KEY)) {
           set({ household: DEFAULT_HOUSEHOLD });
         }
       },
@@ -82,7 +83,7 @@ export const useHouseholdStore = create<HouseholdState>()(
     }),
     {
       name: HOUSEHOLD_STORAGE_KEY,
-      storage: createJSONStorage(() => localStorage),
+      storage: createJSONStorage(getPersistentStorage),
       partialize: (state) => ({ household: state.household }),
     },
   ),

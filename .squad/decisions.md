@@ -136,6 +136,21 @@ All-day events returned with `lane=0`, `lanes=1`, `--dur=0` for easy filtering; 
 - Empty or all-selected states normalize back to "all" sentinel.
 - State flows through `useHouseholdStore.activeFilter` → `useEventsForDate(date)` → DayView/WeekView, enabling single-source filter logic across calendar surfaces without component coupling to Zustand.
 
+### 14. SSR-Safe Storage for Persisted Zustand Stores
+
+**Author:** Yen (Frontend Dev)  
+**Date:** 2026-05-31  
+**Status:** Implemented
+
+Persisted Zustand stores must not reference bare `localStorage` during module evaluation. Next.js App Router SSR/RSC/prerender can evaluate store modules without a browser `window`, which caused `/settings` to return 500 and Chrome to fall into `chrome-error://chromewebdata/` follow-on navigation errors.
+
+All persisted stores now use `src/store/storage.ts`:
+- `getPersistentStorage()` returns browser `window.localStorage` only when `window` exists; otherwise it returns a no-op `StateStorage`.
+- `hasPersistedState(storageKey)` guards browser storage key checks behind `typeof window !== "undefined"`.
+- `eventsStore`, `householdStore`, and `membersStore` configure `persist` with `storage: createJSONStorage(getPersistentStorage)`.
+
+This is the standard pattern for any new persisted store.
+
 ## Cancelled Decisions
 
 ### (Archived) 14. FilterBar Decisions
