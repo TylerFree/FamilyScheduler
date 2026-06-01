@@ -182,3 +182,6 @@ Yen completed custom recurrence configuration panel in EventModal. Users can now
 - **Status:** 92/92 tests passing (up from 89), lint clean, build succeeds
 - **Next:** Linus to add end-condition + by-day edge tests; Basher to verify RecurrenceRule shape expansion
 
+## Learnings: the SSR-safe time-UI pattern (mount gate + interval)
+
+Next.js SSR must not render time-dependent UI from `new Date()`/`Date.now()` when the client can hydrate at a different minute. Keep the initial `now` state as `new Date()` if useful, but gate the visible UI behind `mounted` set in `useEffect`, then refresh with a one-minute interval and clean it up on unmount. DayView and WeekView NOW lines now follow this pattern so server and first client render match before live time UI appears.

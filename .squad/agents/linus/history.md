@@ -69,3 +69,11 @@ Basher added recurrence expansion in store selector path. Test coverage now incl
 ### Custom Recurrence Panel Shipped — Note from Yen (2026-05-30)
 
 Yen built custom recurrence configuration panel. Tests now at 92/92 (up from 89). Your todo: add end-condition + by-day edge case tests for custom recurrence modal. Focus areas: end date >= event date validation, weekly requires >=1 selected day, occurrence count >= 1.
+
+### NOW Line Hydration Fix Shipped — Yen (2026-06-01)
+
+Yen delivered the NOW line SSR hydration fix. DayView and WeekView NOW lines now use the mount-gate-plus-60s-interval pattern, preventing hydration mismatches when server renders at one minute and client hydrates at the next.
+
+**Pattern:** Local `mounted` state set in `useEffect`, render gate with `{mounted && ...}`, 60s interval for live time refresh. This is now the team standard for all clock-driven UI.
+
+**Impact on testing:** The mount gate does not change test surface behavior; NOW line positioning logic remains testable via existing day/week view test patterns. No new test cases required unless future time-dependent UI components are added.

@@ -151,6 +151,32 @@ All persisted stores now use `src/store/storage.ts`:
 
 This is the standard pattern for any new persisted store.
 
+### 15. Mount-Gate Pattern for Time-Dependent SSR UI
+
+**Author:** Yen (Frontend Dev)  
+**Date:** 2026-06-01  
+**Status:** Implemented
+
+Time-dependent UI that reads the current clock (NOW lines, live timestamps, countdowns) must be SSR-safe in Next.js. Components may initialize local state with `new Date()`, but any visible markup derived from that value must be gated until after client mount:
+
+```typescript
+const [mounted, setMounted] = useState(false);
+const [now, setNow] = useState(() => new Date());
+
+useEffect(() => {
+  setMounted(true);
+}, []);
+
+useEffect(() => {
+  const intervalId = setInterval(() => setNow(new Date()), 60_000);
+  return () => clearInterval(intervalId);
+}, []);
+```
+
+Render with `{mounted && ...}` so the server output and first client render are identical. Keep the 60-second interval for live time movement after hydration.
+
+DayView and WeekView NOW lines now follow this pattern. Prevents hydration mismatch when server renders at one minute and client hydrates at the next (e.g., server: `1:15 PM`, client: `1:16 PM`). This is the team standard for all future clock-driven UI components.
+
 ## Cancelled Decisions
 
 ### (Archived) 14. FilterBar Decisions

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { type CSSProperties, type MouseEvent } from "react";
+import React, { type CSSProperties, type MouseEvent, useEffect, useState } from "react";
 import { getEventTimeGridVars, isEventVisibleInTimeGrid } from "@/lib/calendar/timeGrid";
 import type { Event, EventWithLane, Member } from "@/types/index";
 import EventChip from "./EventChip";
@@ -111,10 +111,21 @@ export default function DayView({
     { length: visibleHoursEnd - visibleHoursStart },
     (_, index) => visibleHoursStart + index,
   );
-  const now = new Date();
+  const [mounted, setMounted] = useState(false);
+  const [now, setNow] = useState(() => new Date());
   const isCurrentDay = getLocalIsoDate(now) === date;
   const nowOffset = now.getHours() * 60 + now.getMinutes() - startBoundary;
   const showNowLine = isCurrentDay && nowOffset >= 0 && nowOffset <= totalMinutes;
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    const intervalId = setInterval(() => setNow(new Date()), 60_000);
+
+    return () => clearInterval(intervalId);
+  }, []);
 
   const handleTimelineClick = (clickEvent: MouseEvent<HTMLDivElement>) => {
     if (!onTimeSlotClick) {
@@ -177,7 +188,7 @@ export default function DayView({
             />
           ))}
 
-          {showNowLine ? (
+          {showNowLine && mounted ? (
             <div
               className={styles.nowLine}
               style={{ top: `${nowOffset}px` } satisfies CSSProperties}

@@ -36,7 +36,7 @@ function parseIsoDate(date: string): Date {
   return new Date(year, month - 1, day);
 }
 
-function getLocalIsoDate(date = new Date()): IsoDateString {
+function getLocalIsoDate(date: Date): IsoDateString {
   const year = date.getFullYear();
   const month = `${date.getMonth() + 1}`.padStart(2, "0");
   const day = `${date.getDate()}`.padStart(2, "0");
@@ -182,7 +182,9 @@ export default function WeekView({ startDate, members, filter = "all", onEventCl
   const visibleHoursStart = useHouseholdStore((state) => state.household.preferences.visibleHoursStart);
   const visibleHoursEnd = useHouseholdStore((state) => state.household.preferences.visibleHoursEnd);
   const weekData = useWeekEvents(startDate);
-  const today = getLocalIsoDate();
+  const [mounted, setMounted] = useState(false);
+  const [currentTime, setCurrentTime] = useState(() => new Date());
+  const today = mounted ? getLocalIsoDate(currentTime) : "";
   const totalMinutes = (visibleHoursEnd - visibleHoursStart) * 60;
   const totalHeight = (totalMinutes * HOUR_HEIGHT) / 60;
   const hourMarks = Array.from(
@@ -190,7 +192,6 @@ export default function WeekView({ startDate, members, filter = "all", onEventCl
     (_, index) => visibleHoursStart + index,
   );
   const lastVisibleHour = visibleHoursEnd;
-  const currentTime = new Date();
   const currentMinutes = currentTime.getHours() * 60 + currentTime.getMinutes();
   const nowOffset = currentMinutes - visibleHoursStart * 60;
   const showNowLine = nowOffset >= 0 && nowOffset <= totalMinutes;
@@ -245,6 +246,16 @@ export default function WeekView({ startDate, members, filter = "all", onEventCl
       };
     });
   }, [filter, today, visibleHoursEnd, visibleHoursStart, weekData]);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    const intervalId = setInterval(() => setCurrentTime(new Date()), 60_000);
+
+    return () => clearInterval(intervalId);
+  }, []);
 
   useEffect(() => {
     setMobileOffset(0);
@@ -428,7 +439,7 @@ export default function WeekView({ startDate, members, filter = "all", onEventCl
                   />
                 ))}
 
-                {column.isToday && showNowLine ? (
+                {column.isToday && showNowLine && mounted ? (
                   <div
                     className={styles.nowLine}
                     style={{ "--start": nowOffset } as CSSProperties}
