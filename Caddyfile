@@ -1,0 +1,12 @@
+# DOMAIN controls the public listener:
+# - DOMAIN=scheduler.example.com enables Caddy-managed HTTPS via Let's Encrypt.
+# - DOMAIN=:80 serves plain HTTP for IP-only/private deployments.
+# - If DOMAIN is omitted, Caddy defaults to :80.
+{$DOMAIN::80} {
+  reverse_proxy app:3000
+}
+
+# Explicit plain-HTTP alternative, if you prefer not to use DOMAIN:
+# :80 {
+#   reverse_proxy app:3000
+# }

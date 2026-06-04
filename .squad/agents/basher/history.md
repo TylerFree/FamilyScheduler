@@ -56,3 +56,10 @@ Rusty has completed the Next.js scaffold. Key facts for your store and type work
 ### Custom Recurrence Panel Shipped — Note from Yen (2026-05-30)
 
 Yen built custom recurrence configuration panel (EventModal). Tests now at 92/92. Your todo: confirm RecurrenceRule shape from custom panel expands correctly. Verify weekly byDay codes, end conditions (until/count), and simple monthly/yearly same-day repeats all produce correct virtual occurrences in expansion path.
+
+### Deployment Scaffold Shipped (2026-06-04)
+
+Rusty has shipped a complete self-hosted deployment scaffold for production: multi-stage Dockerfile, docker-compose.yml with Caddy, server setup/deploy scripts, GitHub Actions SSH workflow, and operator documentation. FamilyScheduler now supports Tyler's Linux server with automatic HTTPS and CI/CD push-to-deploy.
+
+The app retains browser-local `localStorage` (no server database yet). When multi-user persistence is needed, coordinate with Rusty to add Postgres/Supabase and update DEPLOYMENT.md backup/restore. Decision #16 in `.squad/decisions.md`.
+

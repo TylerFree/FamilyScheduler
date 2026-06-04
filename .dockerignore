@@ -1,0 +1,15 @@
+node_modules
+.next
+.git
+Design/
+.squad/
+.env
+.env.*
+*.md
+!README.md
+tests/
+.github/
+.vs/
+.copilot/
+tsconfig.tsbuildinfo
+npm-debug.log*

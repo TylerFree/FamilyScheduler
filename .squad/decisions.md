@@ -219,7 +219,35 @@ Already captured in yen/history.md event modal section. Archived here to consoli
 - Preset actions (`Whole Family`, `Just Kids`, `Just Adults`, `Clear All`) always preserve the owner.
 - `src/app/page.tsx` owns the store bridge: if `onSave` payload includes `id`, call `updateEvent(id, updates)`; otherwise generate `id`, `createdAt`, `createdBy`, and `updatedAt`, then call `addEvent(...)`.
 
+### 16. Self-Hosted Docker + Caddy Deployment
+
+**Author:** Rusty (Tech Lead)  
+**Date:** 2026-06-04  
+**Status:** Implemented
+
+FamilyScheduler supports Tyler's self-hosted production deployment on his own Linux server using Docker Compose, a standalone Next.js runtime container, Caddy as the reverse proxy, and GitHub Actions SSH deployment on pushes to `main`.
+
+**Rationale:**
+- Tyler requested deployment to his own Linux server; Vercel or managed platforms are not the default.
+- Next.js `output: "standalone"` produces a compact server bundle for multi-stage Docker builds.
+- Docker Compose enables a single operational command (`docker compose up -d`) with portable config.
+- Caddy minimizes certificate operations: a domain in `.env` enables automatic HTTPS; IP-only deployments use `:80`.
+- GitHub Actions provides lightweight CI/CD while keeping the server as the runtime source of truth.
+
+**Persistence:**
+The app retains browser-local `localStorage` persistence. No server database exists yet. Caddy's named volumes hold TLS certificates/config only. When multi-user persistence is needed, add Postgres or Supabase and update DEPLOYMENT.md with backup/restore procedures.
+
+**Consequences:**
+- Server operators need Docker Engine, the Compose plugin, SSH access, and ports 80/443 open.
+- Production updates are pushes to `main` or manual execution of `scripts/deploy.sh` on the server.
+- Browser-local data will not roam across devices until a future database-backed sync layer lands.
+
 ## Governance
+
+- All meaningful changes require team consensus
+- Document architectural decisions here
+- Keep history focused on work, decisions focused on direction
+
 
 - All meaningful changes require team consensus
 - Document architectural decisions here

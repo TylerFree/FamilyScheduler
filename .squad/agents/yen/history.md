@@ -185,3 +185,13 @@ Yen completed custom recurrence configuration panel in EventModal. Users can now
 ## Learnings: the SSR-safe time-UI pattern (mount gate + interval)
 
 Next.js SSR must not render time-dependent UI from `new Date()`/`Date.now()` when the client can hydrate at a different minute. Keep the initial `now` state as `new Date()` if useful, but gate the visible UI behind `mounted` set in `useEffect`, then refresh with a one-minute interval and clean it up on unmount. DayView and WeekView NOW lines now follow this pattern so server and first client render match before live time UI appears.
+
+### Deployment Scaffold Shipped (2026-06-04)
+
+Rusty shipped a complete self-hosted deployment scaffold for production. FamilyScheduler now runs on Tyler's Linux server via Docker Compose + Caddy, with automatic HTTPS and GitHub Actions SSH deployment on `main` pushes. 
+
+- Deliverables: Dockerfile (multi-stage standalone), docker-compose.yml, Caddyfile, `.env.example`, deploy scripts, GitHub Actions workflow, DEPLOYMENT.md, updated README.
+- App retains browser-local `localStorage` (no server database yet).
+- All tests pass (92/92), build clean, lint clean.
+- Next: Tyler provisions server DNS/secrets and runs first deploy. Decision #16 in `.squad/decisions.md`.
+

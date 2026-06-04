@@ -3,3 +3,6 @@
 .squad/agents/*/history.md merge=union
 .squad/log/** merge=union
 .squad/orchestration-log/** merge=union
+
+# Deployment scripts must run on Linux servers
+scripts/*.sh text eol=lf

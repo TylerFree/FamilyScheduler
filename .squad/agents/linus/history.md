@@ -77,3 +77,12 @@ Yen delivered the NOW line SSR hydration fix. DayView and WeekView NOW lines now
 **Pattern:** Local `mounted` state set in `useEffect`, render gate with `{mounted && ...}`, 60s interval for live time refresh. This is now the team standard for all clock-driven UI.
 
 **Impact on testing:** The mount gate does not change test surface behavior; NOW line positioning logic remains testable via existing day/week view test patterns. No new test cases required unless future time-dependent UI components are added.
+
+### Deployment Scaffold Shipped (2026-06-04)
+
+Rusty shipped a complete self-hosted deployment scaffold for production. FamilyScheduler now has Docker + Caddy deployment on Tyler's Linux server with GitHub Actions SSH CI/CD on `main` pushes.
+
+- No test changes required — deployment is infrastructure-independent from app logic/UI/state.
+- All existing tests (92/92) continue to pass.
+- Team focus now: Tyler provisions server and runs first deploy. Linus continues with recurrence edge-case tests (until/byDay validation). Decision #16 in `.squad/decisions.md`.
+

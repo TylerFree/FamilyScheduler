@@ -20,3 +20,12 @@ next-env.d.ts
 .squad/sessions/
 # Squad: SubSquad activation file (local to this machine)
 .squad-workstream
+
+# Production environment files
+.env
+.env.*
+!.env.example
+
+# Keep Rusty's requested deployment decision visible for review
+!.squad/decisions/inbox/
+!.squad/decisions/inbox/rusty-deployment-architecture.md

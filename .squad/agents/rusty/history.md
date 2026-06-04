@@ -47,3 +47,12 @@
 - Zustand stores go in `src/store/`
 - Date utilities and recurrence helpers go in `src/lib/`
 - Lane assignment algorithm goes in `src/lib/calendar/`
+
+### 2026-06-03 — Self-hosted Deployment Scaffold
+
+**Deployment architecture shipped:**
+- **Docker + Compose:** The app now builds as a Next.js standalone container with a small Node 20 Alpine runtime. Compose keeps the app and reverse proxy portable across Tyler's Linux server without tying the family calendar to a managed platform.
+- **Caddy reverse proxy:** Caddy provides the lowest-ops path to HTTPS: one `DOMAIN` value in `.env` gives automatic Let's Encrypt certificates, while `DOMAIN=:80` supports IP-only/plain-HTTP deployments.
+- **Why not Vercel:** The target is Tyler's own Linux server, so self-hosting keeps runtime ownership, cost, and deployment mechanics under his control while still using a production Next.js build.
+- **Persistence note:** FamilyScheduler still uses browser `localStorage`; Docker volumes do not hold app data yet. Server backup is limited to Caddy TLS/config volumes until the team adds Postgres/Supabase or another shared persistence layer.
+- **Deployment path:** GitHub Actions validates lint/tests/build on `main`, then SSHes to the server and runs `/opt/family-scheduler/scripts/deploy.sh`.

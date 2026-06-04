@@ -1,11 +1,12 @@
 ---
-updated_at: 2026-06-01T14:23:52Z
-focus_area: NOW line SSR hydration fix shipped; mount-gate pattern established as team standard.
+updated_at: 2026-06-04T05:23:12Z
+focus_area: Deployment scaffold shipped; awaiting first server bootstrap.
 active_issues: []
 ---
 
 # What We're Focused On
 
-**Latest session:** NOW line SSR hydration fix shipped. DayView and WeekView NOW lines use the mount-gate-plus-60s-interval pattern, preventing hydration mismatches. This is now the team standard for all clock-driven UI components (live timestamps, countdowns, etc.).
+**Latest session:** Deployment scaffold is complete and shipped. FamilyScheduler has a production-ready self-hosted Docker + Caddy deployment with GitHub Actions CI/CD. Now awaiting Tyler to provision his Linux server (DNS/secrets) and run the first production deploy.
 
-Remaining work: (1) Linus add end-condition + by-day edge case tests for custom recurrence; (2) Basher confirm RecurrenceRule shape from custom panel expands correctly; (3) Mobile layout refinement (week view horizontal scroll polish); (4) Recurring event edge cases (timezone handling, all-day recurrence); (5) Month view as third calendar surface.
+Remaining work: (1) Tyler provision server and run first deploy; (2) Linus add end-condition + by-day edge case tests for custom recurrence; (3) Basher confirm RecurrenceRule shape from custom panel expands correctly; (4) Mobile layout refinement; (5) Future Postgres/Supabase persistence when moving off localStorage.
+
