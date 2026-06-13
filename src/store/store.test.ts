@@ -120,6 +120,7 @@ describe("persisted stores", () => {
     const { HOUSEHOLD_STORAGE_KEY, useHouseholdStore } = await importHouseholdStore();
 
     useHouseholdStore.getState().initializeHousehold();
+    expect(useHouseholdStore.getState().household.preferences.defaultView).toBe("week");
     useHouseholdStore.getState().updateHousehold({ name: "The Busy Free Family" });
     useHouseholdStore.getState().updatePreferences({ showWeather: true, visibleHoursStart: 6 });
     useHouseholdStore.getState().setActiveFilter(["tyler", "erin"]);
@@ -137,5 +138,38 @@ describe("persisted stores", () => {
     expect(reloadedModule.useHouseholdStore.getState().household.preferences.visibleHoursStart).toBe(6);
     expect(reloadedModule.useHouseholdStore.getState().activeFilter).toBe("all");
     expect(reloadedModule.useHouseholdStore.getState().currentDate).not.toBe(RELOAD_DATE);
+  });
+
+  it("migrates persisted household defaults to weekly view", async () => {
+    const householdStorageKey = "familyscheduler-household";
+
+    localStorage.setItem(
+      householdStorageKey,
+      JSON.stringify({
+        state: {
+          household: {
+            id: "the-free-family",
+            name: "The Busy Free Family",
+            location: "Duvall, WA",
+            members: [],
+            preferences: {
+              defaultView: "day",
+              weekStartsOn: 0,
+              visibleHoursStart: 6,
+              visibleHoursEnd: 21,
+              timeFormat: "12h",
+              showWeather: true,
+            },
+          },
+        },
+        version: 0,
+      }),
+    );
+
+    const { useHouseholdStore } = await importHouseholdStore();
+
+    expect(useHouseholdStore.getState().household.preferences.defaultView).toBe("week");
+    expect(useHouseholdStore.getState().household.preferences.visibleHoursStart).toBe(6);
+    expect(useHouseholdStore.getState().household.preferences.showWeather).toBe(true);
   });
 });

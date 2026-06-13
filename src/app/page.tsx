@@ -224,7 +224,7 @@ export default function Home() {
   }, [jumpToToday, modalState.open, navigateDate, surfaceView]);
 
   return (
-    <main style={{ padding: "var(--page-padding)", display: "grid", gap: "16px" }}>
+    <main style={{ minHeight: "100dvh", padding: "var(--page-padding)", display: "flex", flexDirection: "column", gap: "16px" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
         <div style={{ display: "inline-flex", gap: "8px", flexWrap: "wrap" }}>
           <button type="button" onClick={() => openCreateModal(currentDate, visibleHoursStart * 60)} style={chromeButtonStyle}>

@@ -30,7 +30,7 @@ export const DEFAULT_HOUSEHOLD: Household = {
   location: "Duvall, WA",
   members: FAMILY_MEMBERS,
   preferences: {
-    defaultView: "day",
+    defaultView: "week",
     weekStartsOn: 0,
     visibleHoursStart: 7,
     visibleHoursEnd: 21,
@@ -83,7 +83,26 @@ export const useHouseholdStore = create<HouseholdState>()(
     }),
     {
       name: HOUSEHOLD_STORAGE_KEY,
+      version: 1,
       storage: createJSONStorage(getPersistentStorage),
+      migrate: (persistedState) => {
+        const state = persistedState as Partial<HouseholdState>;
+
+        if (!state.household) {
+          return persistedState;
+        }
+
+        return {
+          ...state,
+          household: {
+            ...state.household,
+            preferences: {
+              ...state.household.preferences,
+              defaultView: "week",
+            },
+          },
+        };
+      },
       partialize: (state) => ({ household: state.household }),
     },
   ),

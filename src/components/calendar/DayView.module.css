@@ -1,6 +1,6 @@
 .dayView {
-  max-width: var(--max-width-calendar);
-  margin: 0 auto;
+  width: 100%;
+  flex: 1;
 }
 
 .header {

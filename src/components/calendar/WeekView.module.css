@@ -1,7 +1,10 @@
 .weekView {
   --hour-height: 36px;
-  max-width: var(--max-width-calendar);
-  margin: 0 auto;
+  width: 100%;
+  min-height: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .header {
@@ -58,6 +61,10 @@
 
 .surface {
   --col-count: 7;
+  min-height: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
   overflow-x: auto;
   padding-top: 4px;
   background: var(--paper);
@@ -228,7 +235,8 @@
 }
 
 .scrollViewport {
-  max-height: min(70vh, calc(14 * var(--hour-height)));
+  min-height: 0;
+  flex: 1;
   overflow-y: auto;
 }
 
@@ -355,7 +363,7 @@
   }
 
   .scrollViewport {
-    max-height: min(60vh, calc(14 * var(--hour-height)));
+    flex-basis: min(60vh, calc(14 * var(--hour-height)));
   }
 }
 
